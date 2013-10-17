@@ -29,4 +29,4 @@ Michał Pawłowski - <michal@pawlowski.be> - <http://pawlowski.be>
 License
 -------
 
-Currently unknown - see the LICENSE file for details
+The MIT License (MIT) - see the LICENSE file for details
