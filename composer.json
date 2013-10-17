@@ -1,7 +1,14 @@
 {
     "name": "minchal/vero",
+    "type": "library",
+    "description": "Web Application Framework for PHP",
+    "keywords": ["framework"],
+    "license": "MIT",
     "require": {
         "php": ">=5.4.0",
-		"psr/log": "*"
+        "psr/log": "*"
+    },
+    "autoload": {
+        "psr-0": { "Vero\\": "src/" }
     }
 }
