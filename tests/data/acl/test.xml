@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<acl group_id="3">
+	<r name="pm" access="allow">
+		<r name="*" access="allow" />
+	</r>
+	<r name="user" access="allow">
+		<r name="*" access="allow" />
+	</r>
+</acl>

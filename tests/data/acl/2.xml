@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<acl group_id="2">
+	<r name="admin" access="allow">
+		<r name="system" access="allow">
+			<r name="overview" access="allow" />
+		</r>
+		<r name="user" access="allow">
+			<r name="listing" access="allow" />
+			<r name="details" access="allow" />
+		</r>
+		
+		<r name="*" access="allow" />
+	</r>
+	
+	<r name="*" access="allow" />
+</acl>

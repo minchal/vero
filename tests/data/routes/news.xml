@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<routes module="news" namespace="App\Action\News">
+	<route id="item">
+		<url>news/{id:int}/{title:any:}</url>
+		<action>Item</action>
+	</route>
+	<route id="archives/year">
+		<url>archives/{year}/{page:int:1}</url>
+		<action>Archives</action>
+		<params>
+			<param name="year" reqs="\d{4}" />
+		</params>
+	</route>
+	<route id="archives/month">
+		<url>archives/{year}-{month}/{page:int:1}</url>
+		<action>Archives</action>
+		<params>
+			<param name="year" reqs="\d{4}" />
+			<param name="month" reqs="\d{2}" />
+		</params>
+	</route>
+	<route id="category">
+		<url>archives/category/{category:int}/{page:int:1}</url>
+		<action>Category</action>
+	</route>
+	
+	<route id="admin">
+		<url>admin/aktualnosci/{category:int:0}/{page:int:1}/{order:int:}</url>
+		<action>Admin\Listing</action>
+	</route>
+	<route id="admin/add">
+		<url>admin/aktualnosci/dodaj</url>
+		<action>Admin\Add</action>
+	</route>
+	<route id="admin/edit">
+		<url>admin/aktualnosci/{id:int}/edytuj</url>
+		<action>Admin\Edit</action>
+	</route>
+	<route id="admin/delete">
+		<url>admin/aktualnosci/{id:int}/usun</url>
+		<action>Admin\Categories\Listing</action>
+	</route>
+	<route id="admin/categories">
+		<url>admin/aktualnosci/kategorie</url>
+		<action>Admin\Categories\Listing</action>
+	</route>
+	<route id="admin/categories/add">
+		<url>admin/aktualnosci/kategorie/dodaj</url>
+		<action>Admin\Categories\Add</action>
+	</route>
+	<route id="admin/categories/edit">
+		<url>admin/aktualnosci/kategorie/{id:int}/edytuj</url>
+		<action>Admin\Categories\Edit</action>
+	</route>
+	<route id="admin/categories/delete">
+		<url>admin/aktualnosci/kategorie/{id:int}/usun</url>
+		<action>Admin\Categories\Delete</action>
+	</route>
+</routes>

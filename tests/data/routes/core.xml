@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<routes namespace="App\Action">
+	<route id="index">
+		<url></url>
+		<action>Index</action>
+	</route>
+	
+	<route id="contact">
+		<url>kontakt</url>
+		<action>Contact</action>
+	</route>
+	
+	<route id="sitemap">
+		<url>sitemap</url>
+		<action>Sitemap</action>
+		<params>
+			<param name="ext" default="html"/>
+		</params>
+	</route>
+	<route id="sitemap/xml">
+		<url>sitemap.xml</url>
+		<action>Sitemap</action>
+		<params>
+			<param name="ext" default="xml" />
+		</params>
+	</route>
+</routes>

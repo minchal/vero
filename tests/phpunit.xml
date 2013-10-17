@@ -1,0 +1,17 @@
+<phpunit bootstrap="Bootstrap.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         stopOnFailure="false">
+         
+	<testsuite name="Vero Framework Test Suite">
+		<directory>./src/</directory>
+	</testsuite>
+	
+	<filter>
+		<blacklist>
+			<directory suffix=".php">./</directory>
+		</blacklist>
+	</filter>
+</phpunit>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="VeroFW" default="all">
+	<property name="src" value="${project.basedir}/src" />
+	<property name="output" value="${project.basedir}/build" />
+	<property name="resources" value="${project.basedir}/resources" />
+	
+	<fileset id="src_files" dir="${src}">
+        <include name="**/*.php"/>
+    </fileset>
+    
+    <target name="all" depends="prepare, tests, report"/>
+	<target name="report" depends="docs, phpcs, phploc, phpcpd"/>
+  	
+	<target name="prepare" depends="clean">
+		<mkdir dir="${output}"/>
+        <copy file="${resources}/index.html" tofile="${output}/index.html" overwrite="true"/>
+	</target>
+	
+	<target name="clean">
+		<delete dir="${output}"/>
+	</target>
+	
+    <target name="tests" depends="prepare" description="Run Unit Tests and generate covarage raport.">
+        <exec
+			dir="tests" passthru="true"
+			command="phpunit --log-junit ${output}/junit.xml --coverage-clover ${output}/coverage.xml --coverage-html ${output}/coverage"
+		/>
+		<xslt
+			file="${output}/junit.xml"
+			tofile="${output}/junit_surefire.xml"
+			style="${resources}/phpunit_to_surefire.xslt"
+		/>
+    </target>
+    
+    <target name="docs" description="Generate API Documentation.">
+		<apigen source="${src}" destination="${output}/docs" title="Vero Framework" deprecated="true" todo="true"/>
+	</target>
+	
+    <target name="phpcs" description="Check style of code.">
+    	<phpcodesniffer format="summary" standard="PSR2">
+    	    <fileset refid="src_files"/>
+    	    <formatter type="checkstyle" outfile="${output}/checkstyle.xml"/>
+    	</phpcodesniffer>
+    	<xslt
+			file="${output}/checkstyle.xml"
+			tofile="${output}/checkstyle.html"
+			style="${resources}/checkstyle.xsl"
+		/>
+    </target>
+    
+    <!--<target name="phpmd">
+		<phpmd>
+			<fileset refid="src_files"/>
+			<formatter type="xml" outfile="${output}/phpmd.xml"/>
+		</phpmd>
+		<xslt
+			file="${output}/phpmd.xml"
+			tofile="${output}/phpmd.html"
+			style="${resources}/pmd.xslt"
+		/>
+    </target>-->
+    
+    <target name="phploc" description="Measure size of project.">
+		<phploc countTests="true" reportType="txt" reportDirectory="${output}" reportName="phploc">
+			<fileset refid="src_files"/>
+		</phploc>
+		<phploc countTests="true" reportType="csv" reportDirectory="${output}" reportName="phploc">
+			<fileset refid="src_files"/>
+		</phploc>
+    </target>
+    
+    <target name="phpcpd" description="Detect copy-paste code.">
+		<phpcpd>
+			<fileset refid="src_files"/>
+			<formatter type="pmd" outfile="${output}/phpcpd.xml"/>
+		</phpcpd>
+		<xslt
+			file="${output}/phpcpd.xml"
+			tofile="${output}/phpcpd.html"
+			style="${resources}/cpd.xslt"
+		/>
+    </target>
+</project>
