@@ -130,9 +130,9 @@ class Session
      */
     public function destroy(Response $response)
     {
+        $this -> backend -> delete($this -> id);
         $this -> id   = null;
         $this -> data = array();
-        $this -> backend  -> delete($this -> id);
         $response -> cookie($this -> cookie, '', 1);
     }
     

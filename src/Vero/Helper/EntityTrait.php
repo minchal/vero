@@ -38,4 +38,14 @@ trait EntityTrait
         
         return $this;
     }
+    
+    /**
+     * Get this entity properties as array.
+     * 
+     * @return array
+     */
+    public function asArray()
+    {
+        return get_object_vars($this);
+    }
 }

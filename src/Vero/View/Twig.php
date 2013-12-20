@@ -144,12 +144,24 @@ class Twig implements ResponseBody, DI\Dependent
     {
         $response -> header('Content-Type', $this->format . '; charset=UTF-8');
         
-        $this -> set('widgets', $this -> widgets);
         $this -> set('signature', $this -> getSignatureKey());
         $this -> set('debug', $buffer);
         
+        $this -> compiled = $this -> render();
+    }
+    
+    /**
+     * Render View.
+     * 
+     * @return string
+     */
+    public function render()
+    {
         try {
-            $this -> compiled = $this -> container -> get('twig') -> render($this->tpl, $this->data);
+            $twig = $this -> container -> get('twig');
+            $twig -> addGlobal('widgets', $this -> widgets);
+            
+            return $twig -> render($this -> tpl, $this -> data);
         } catch (\Twig_Error_Runtime $e) {
             if ($p = $e -> getPrevious()) {
                 throw $p;

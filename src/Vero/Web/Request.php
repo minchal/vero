@@ -38,32 +38,33 @@ class Request implements \ArrayAccess
      */
     protected $params = [];
     
-    protected $mgQuotes = false;
-    
-    protected $base;
-    protected $prefix;
+    /**
+     * Request data
+     */
+    protected $globals = [];
     
     /**
-     * Create request instance.
-     * 
-     * @param string $base
-     * @param string $prefix
+     * Create request instance from globals arrays.
      */
-    public function __construct($base = '', $prefix = '')
+    public static function createFromGlobals()
     {
-        $this -> base   = $base;
-        $this -> prefix = $prefix;
+        $request = new self([
+            'get' => $_GET,
+            'post' => $_POST,
+            'cookie' => $_COOKIE,
+            'files' => $_FILES,
+            'server' => $_SERVER,
+        ]);
+        
+        return $request;
     }
     
     /**
-     * Get current request URI.
-     * Ex.: /vero/index.php/user/foo?p=bar
-     * 
-     * @return string
+     * Create request instance with any request data.
      */
-    public function url()
+    public function __construct(array $globals)
     {
-        return $this -> server('REQUEST_URI');
+        $this -> globals = $globals;
     }
     
     /**
@@ -73,19 +74,19 @@ class Request implements \ArrayAccess
      *   /base/prefix.php/
      *   /base/prefix.php
      * 
+     * @param string
+     * @param string
      * @return string
      */
-    public function getQuery()
+    public function getQuery($base = '', $prefix = '')
     {
         $query = $this -> url();
         
-        if ($this -> base && strpos($query, $this -> base) === 0) {
-            $query = (string) substr($query, strlen($this -> base));
+        if ($base && strpos($query, $base) === 0) {
+            $query = (string) substr($query, strlen($base));
         }
-        if ($this -> prefix &&
-            (strpos($query, $this -> prefix) === 0 || strpos($query, rtrim($this -> prefix, '/')) === 0)
-        ) {
-            $query = (string) substr($query, strlen($this -> prefix));
+        if ($prefix && (strpos($query, $prefix) === 0 || strpos($query, rtrim($prefix, '/')) === 0)) {
+            $query = (string) substr($query, strlen($prefix));
         }
         
         if (strpos($query, '?') !== false) {
@@ -165,7 +166,7 @@ class Request implements \ArrayAccess
      */
     public function get($name = null, $defValue = null)
     {
-        return $this -> getGlobal($_GET, $name, $defValue);
+        return $this -> getGlobal('get', $name, $defValue);
     }
     
     /**
@@ -176,7 +177,7 @@ class Request implements \ArrayAccess
      */
     public function post($name = null, $defValue = null)
     {
-        return $this -> getGlobal($_POST, $name, $defValue);
+        return $this -> getGlobal('post', $name, $defValue);
     }
     
     /**
@@ -187,27 +188,17 @@ class Request implements \ArrayAccess
      */
     public function cookie($name = null, $defValue = null)
     {
-        return $this -> getGlobal($_COOKIE, $name, $defValue);
+        return $this -> getGlobal('cookie', $name, $defValue);
     }
     
     /**
-     * Get part of GET or POST array, but only with not empty values.
+     * Get value from SERVER array or default value, if variable is not set.
      * 
-     * @param array $keys
-     * @param string $type
-     * @return array
+     * @return mixed
      */
-    public function rewrite(array $keys, $type = self::GET)
+    public function server($name, $defValue = null)
     {
-        $ret = [];
-        
-        foreach ($keys as $k) {
-            if ($v = $this -> {$type}($k)) {
-                $ret[$k] = $v;
-            }
-        }
-        
-        return $ret;
+        return $this -> getGlobal('server', $name, $defValue);
     }
     
     /**
@@ -239,6 +230,17 @@ class Request implements \ArrayAccess
     }
     
     /**
+     * Get current request URI.
+     * Ex.: /vero/index.php/user/foo?p=bar
+     * 
+     * @return string
+     */
+    public function url()
+    {
+        return $this -> server('REQUEST_URI');
+    }
+    
+    /**
      * Check if request is made by HTTPS.
      * 
      * @return boolean
@@ -250,13 +252,13 @@ class Request implements \ArrayAccess
     }
     
     /**
-     * Get value from SERVER array or default value, if variable is not set.
+     * Get current request schame.
      * 
-     * @return mixed
+     * @return string
      */
-    public function server($name, $defValue = null)
+    public function scheme()
     {
-        return isset($_SERVER[$name]) ? $_SERVER[$name] : $defValue;
+        return $this -> isSecure() ? 'https' : 'http';
     }
     
     /**
@@ -306,6 +308,26 @@ class Request implements \ArrayAccess
     }
     
     /**
+     * Get USER_AGENT header value.
+     * 
+     * @return string
+     */
+    public function userAgent()
+    {
+        return $this -> server('HTTP_USER_AGENT');
+    }
+    
+    /**
+     * Try to guess base URL for application.
+     * 
+     * @return string
+     */
+    public function guessBase()
+    {
+		return rtrim(dirname($this -> server('SCRIPT_NAME')), '/') . '/';
+    }
+    
+    /**
      * Get Accept-Language as array.
      * This method returns only languages (without full locale).
      * 
@@ -335,13 +357,23 @@ class Request implements \ArrayAccess
     }
     
     /**
-     * Get USER_AGENT header value.
+     * Get part of GET or POST array, but only with not empty values.
      * 
-     * @return string
+     * @param array $keys
+     * @param string $type
+     * @return array
      */
-    public function userAgent()
+    public function rewrite(array $keys, $type = self::GET)
     {
-        return $this -> server('HTTP_USER_AGENT');
+        $ret = [];
+        
+        foreach ($keys as $k) {
+            if ($v = $this -> {$type}($k)) {
+                $ret[$k] = $v;
+            }
+        }
+        
+        return $ret;
     }
     
     /**
@@ -387,16 +419,20 @@ class Request implements \ArrayAccess
      * 
      * @return mixed
      */
-    protected function getGlobal(&$array, $name = null, $defValue = null)
+    protected function getGlobal($array, $name = null, $defValue = null)
     {
-        if ($name === null) {
-            return $array;
-        }
-        
-        if (!isset($array[$name])) {
+        if (!isset($this -> globals[$array])) {
             return $defValue;
         }
         
-        return $array[$name];
+        if ($name === null) {
+            return $this -> globals[$array];
+        }
+        
+        if (!isset($this -> globals[$array][$name])) {
+            return $defValue;
+        }
+        
+        return $this -> globals[$array][$name];
     }
 }

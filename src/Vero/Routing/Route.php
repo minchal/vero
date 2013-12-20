@@ -23,7 +23,7 @@ interface Route
     public function getPrefix();
     
     /**
-     * Get action ralated with this route.
+     * Get action releated with this route.
      * 
      * @return string 
      */

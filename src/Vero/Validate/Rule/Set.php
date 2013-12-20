@@ -15,7 +15,6 @@ use Vero\Validate\BasicRule;
  * Options:
  *  - optional (default: false)
  *  - items (array)
- *  - multi (default: false)
  */
 class Set extends BasicRule
 {
@@ -27,6 +26,7 @@ class Set extends BasicRule
         $value = (string) $this -> getScalar($value);
         
         if (!$value) {
+            $value = null;
             return $this -> testRequired($value, $options);
         }
         

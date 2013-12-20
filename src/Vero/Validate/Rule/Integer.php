@@ -12,6 +12,7 @@ namespace Vero\Validate\Rule;
  *  - optional (default: false)
  *  - min (default: 0, set to null to remove)
  *  - max
+ *  - nullable (boolean, default: false) - Transform empty string value to null (instead of 0)
  */
 class Integer extends Number
 {
@@ -23,7 +24,12 @@ class Integer extends Number
         $value = $this -> getScalar($value);
         
         if (!$value) {
-            $value = 0;
+            if ($this -> option($options, 'nullable') && $value === '') {
+                $value = null;
+            } else {
+                $value = 0;
+            }
+            
             return $this -> testRequired($value, $options);
         }
         

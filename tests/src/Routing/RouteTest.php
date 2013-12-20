@@ -96,4 +96,21 @@ class RouteTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($route->url(array('year'=>'2011','month'=>'07')), 'news/2011-07');
 		$this->assertEquals($route->url(array('year'=>'2011','month'=>'07','page'=>3)), 'news/2011-07/3');
 	}
+	
+	public function testArgs() {
+		$route = new PatternRoute('action', 'news/{id:int}');
+        $route->match('news/18', $args);
+		$this->assertEquals(['id'=>18], $args);
+        
+        //$route->match('news/', $args);
+		//$this->assertEquals(['id'=>''], $args);
+        
+        //$route->match('news', $args);
+		//$this->assertEquals(['id'=>''], $args);
+        
+        $route->match('news/0', $args);
+		$this->assertEquals(['id'=>0], $args);
+        
+    }
+    
 }

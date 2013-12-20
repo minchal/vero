@@ -17,9 +17,9 @@ Documentation
 
 Create API documentation with [ApiGen](http://apigen.org/):
 
-    ``` sh
-    $ apigen -s src -d docs
-    ```
+```bash
+apigen -s src -d docs
+```
 
 Authors
 -------

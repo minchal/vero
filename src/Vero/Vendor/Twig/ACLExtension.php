@@ -53,9 +53,9 @@ class ACLExtension extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return array(
+        return [
             'acl' => new \Twig_SimpleFunction('acl', [$this, 'check']),
-        );
+        ];
     }
     
     /**

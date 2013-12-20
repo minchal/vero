@@ -25,6 +25,7 @@ class PackagesUninstall extends Console\Command\Command
             -> setName('vero:packages:uninstall')
             -> setDescription('Uninstall Vero packages.')
             -> addArgument('package', InputArgument::IS_ARRAY, 'Packages names to uninstall')
+            -> addOption('deps', null, InputOption::VALUE_NONE, 'With dependencies')
             -> addOption('dest', 'd', InputOption::VALUE_OPTIONAL, 'Change destination directory')
             -> setHelp(
 <<<EOT
@@ -59,9 +60,9 @@ EOT
             $output -> writeln(' '.$node);
         };
         
-        foreach ($input->getArgument('package') as $name) {
-            $package = $mngr -> getPackage($name);
-            
+        $packages = $mngr -> resolvePackages($input->getArgument('package'), (boolean) $input->getOption('deps'));
+        
+        foreach ($packages as $package) {
             $output -> writeln('Package <comment>'.$package->getname().'</comment>:');
             
             $mngr -> uninstall($package, $listener);

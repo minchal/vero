@@ -14,11 +14,19 @@ class Container
      * Set service for ID.
      * 
      * @param string
-     * @param Service
+     * @param Service|callable
      * @return self
      */
-    public function set($id, Service $service)
+    public function set($id, $service)
     {
+        if (is_callable($service)) {
+            $service = new CallbackService($service);
+        }
+        
+        if (!$service instanceof Service) {
+            throw new \DomainException('Service must be callback or implement Vero\DependencyInjection\Service interface.');
+        }
+        
         $service -> setContainer($this);
         $this -> services[$id] = $service;
         

@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+<file source-language="en" datatype="plaintext">
+<body>
+    <trans-unit><source>now</source><target>teraz</target></trans-unit>
+    <trans-unit><source>seconds</source><target>{0,plural,one{sekundę}few{{0,number} sekundy}other{{0,number} sekund}} temu</target></trans-unit>
+    <trans-unit><source>minutes</source><target>{0,plural,one{minutę}few{{0,number} minuty}other{{0,number} minut}} temu</target></trans-unit>
+    <trans-unit><source>hours</source><target>{0,plural,one{godzinę}few{{0,number} godziny}other{{0,number} godzin}} temu</target></trans-unit>
+    
+    <trans-unit><source>today</source><target>dzisiaj o {0}</target></trans-unit>
+    <trans-unit><source>yesterday</source><target>wczoraj o {0}</target></trans-unit>
+    <trans-unit><source>before yesterday</source><target>przedwczoraj o {0}</target></trans-unit>
+    <trans-unit><source>week</source><target>{0} o {1}</target></trans-unit>
+    <trans-unit><source>this year</source><target>{0} {1} o {2}</target></trans-unit>
+    <trans-unit><source>before this year</source><target>{0} {1} {2} o {3}</target></trans-unit>
+    
+    <trans-unit><source>weekday 1</source><target>w poniedziałek</target></trans-unit>
+    <trans-unit><source>weekday 2</source><target>we wtorek</target></trans-unit>
+    <trans-unit><source>weekday 3</source><target>w środę</target></trans-unit>
+    <trans-unit><source>weekday 4</source><target>w czwartek</target></trans-unit>
+    <trans-unit><source>weekday 5</source><target>w piątek</target></trans-unit>
+    <trans-unit><source>weekday 6</source><target>w sobotę</target></trans-unit>
+    <trans-unit><source>weekday 7</source><target>w niedzielę</target></trans-unit>
+    
+    <trans-unit><source>month 1</source><target>stycznia</target></trans-unit>
+    <trans-unit><source>month 2</source><target>lutego</target></trans-unit>
+    <trans-unit><source>month 3</source><target>marca</target></trans-unit>
+    <trans-unit><source>month 4</source><target>kwietnia</target></trans-unit>
+    <trans-unit><source>month 5</source><target>maja</target></trans-unit>
+    <trans-unit><source>month 6</source><target>czerwca</target></trans-unit>
+    <trans-unit><source>month 7</source><target>lipca</target></trans-unit>
+    <trans-unit><source>month 8</source><target>sierpnia</target></trans-unit>
+    <trans-unit><source>month 9</source><target>września</target></trans-unit>
+    <trans-unit><source>month 10</source><target>października</target></trans-unit>
+    <trans-unit><source>month 11</source><target>listopada</target></trans-unit>
+    <trans-unit><source>month 12</source><target>grudnia</target></trans-unit>
+</body>
+</file>
+</xliff>

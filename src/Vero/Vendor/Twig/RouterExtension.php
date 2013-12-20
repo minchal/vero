@@ -49,10 +49,10 @@ class RouterExtension extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return array(
+        return [
             'url'   => new \Twig_SimpleFunction('url', [$this, 'url']),
             'asset' => new \Twig_SimpleFunction('asset', [$this, 'asset']),
-        );
+        ];
     }
     
     /**
@@ -62,7 +62,7 @@ class RouterExtension extends \Twig_Extension
     public function url($id = null)
     {
         try {
-            return call_user_func_array(array($this->router,'url'), func_get_args());
+            return call_user_func_array([$this->router,'url'], func_get_args());
         } catch (\OutOfRangeException $e) {
         }
         

@@ -76,11 +76,12 @@ abstract class Container implements ContainerInterface, RemotableContainerInterf
      * @param string
      * @param string
      * @param array
+     * @param boolean
      * @return self
      */
-    public function addArray($field, $rule, array $options = [])
+    public function addArray($field, $rule, array $options = [], $optional = false)
     {
-        $this -> add($field, 'array', ['rule' => $rule, 'options' => $options]);
+        $this -> add($field, 'array', ['rule' => $rule, 'options' => $options, 'optional' => $optional]);
         return $this;
     }
     

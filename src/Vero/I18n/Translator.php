@@ -53,13 +53,28 @@ class Translator
      * @see setLang()
      * @see \Vero\I18n\Backend
      */
-    public function __construct(Backend $backend, $defaultLang, array $accepted = [])
+    public function __construct(Backend $backend, $defaultLang, array $accepted = [], Formatter $formatter = null)
     {
+        if (!$formatter) {
+            $formatter = new IntlFormatter();
+        }
+        
         $this -> backend     = $backend;
         $this -> defaultLang = $defaultLang;
         $this -> accepted    = $accepted;
+        $this -> formatter   = $formatter;
         
         $this -> setLang($defaultLang);
+    }
+    
+    /**
+     * Get current Formatter instance.
+     * 
+     * @return Formatter
+     */
+    public function getFormatter()
+    {
+        return $this -> formatter;
     }
     
     /**
@@ -76,15 +91,36 @@ class Translator
                 throw new \OutOfRangeException('Language '.$lang.' is not accepted.');
             }
             
-            setlocale(LC_ALL, $this -> accepted[$lang]);
-            $this -> locale = $this -> accepted[$lang];
+            $this -> locale = $this -> setLocales($this -> accepted[$lang]);
         } else {
             $this -> locale = $lang;
         }
         
+        $this -> formatter -> setLocale($this -> locale);
         $this -> lang = $lang;
         
         return $this;
+    }
+    
+    /**
+     * Set locales.
+     * 
+     * @param string|array
+     * @return string
+     */
+    protected function setLocales($locales)
+    {
+        $locales = (array) $locales;
+        
+        foreach ($locales as $key => $locale) {
+            if (!$key) {
+                $key = LC_ALL;
+            }
+            
+            setlocale($key, $locale);
+        }
+        
+        return reset($locales);
     }
     
     /**
@@ -227,96 +263,9 @@ class Translator
         $args = (array) $args;
         
         if (!empty($args)) {
-            return $this -> formatString($str, $args);
+            return $this -> formatter -> string($str, $args);
         }
         
         return $str;
-    }
-    
-    /**
-     * Format string with speciefied parameters.
-     * 
-     * @param string
-     * @param array 
-     * @see \MessageFormatter
-     */
-    public function formatString($str, array $args = [])
-    {
-        $formatter = new \MessageFormatter($this -> locale, $str);
-        
-        if (!$formatter) {
-            throw new \InvalidArgumentException('String "'.$str.'" is invalid.');
-        }
-        
-        $r = $formatter -> format($args);
-        
-        if ($r === false) {
-            throw new \LogicException($formatter -> getErrorMessage());
-        }
-        
-        return $r;
-    }
-    
-    /**
-     * 
-     * @TODO
-     */
-    public function formatDate($date, $dateType = 'datetime', $timeType = null)
-    {
-        if (is_string($date)) {
-            if (is_numeric($date)) {
-                $date = (int) $date;
-            } else {
-                $date = strtotime($date);
-            }
-        }
-        
-        if (!$date) {
-            return '';
-        }
-        
-        if (is_string($dateType)) {
-            $type = $dateType;
-            
-            switch ($type) {
-                case 'time':
-                    $fmt = new \IntlDateFormatter($this->locale, \IntlDateFormatter::NONE, \IntlDateFormatter::MEDIUM);
-                    break;
-                case 'date':
-                    $fmt = new \IntlDateFormatter($this->locale, \IntlDateFormatter::SHORT, \IntlDateFormatter::NONE);
-                    break;
-                case 'iso':
-                    $fmt = new \IntlDateFormatter($this->locale, \IntlDateFormatter::SHORT, \IntlDateFormatter::NONE);
-                    $fmt -> setPattern('yyyy-MM-dd');
-                    break;
-                case 'iso-datetime':
-                    $fmt = new \IntlDateFormatter($this->locale, \IntlDateFormatter::SHORT, \IntlDateFormatter::NONE);
-                    $fmt -> setPattern('yyyy-MM-dd HH:mm:ss');
-                    break;
-                case 'w3c':
-                    $fmt = new \IntlDateFormatter($this->locale, \IntlDateFormatter::SHORT, \IntlDateFormatter::SHORT);
-                    $fmt -> setPattern('yyyy-MM-dd\'T\'HH:mm:ssZ');
-                    break;
-                case 'short':
-                    $fmt = new \IntlDateFormatter($this->locale, \IntlDateFormatter::SHORT, \IntlDateFormatter::SHORT);
-                    $fmt -> setPattern('dd.MM.yyyy HH:mm');
-                    break;
-                default:
-                    $fmt = new \IntlDateFormatter($this->locale, \IntlDateFormatter::SHORT, \IntlDateFormatter::MEDIUM);
-            }
-        } else {
-            $fmt = new \IntlDateFormatter($this -> locale, $dateType, $timeType);
-        }
-        
-        return $fmt->format($date);
-    }
-    
-    /**
-     * 
-     * @TODO
-     */
-    public function formatNumber($number, $type = 1)
-    {
-        
     }
 }

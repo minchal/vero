@@ -78,6 +78,20 @@ abstract class Basic implements ActionInterface
     }
     
     /**
+     * Forward request to another action.
+     * 
+     * @param string
+     * @return mixed
+     */
+    public function forward($routeId, array $params = [])
+    {
+        $class = $this -> get('router') -> getRoute($routeId) -> getAction();
+        $action = new $class($this -> container);
+        
+        return $action -> run($this -> get('request') -> setParams($params));
+    }
+    
+    /**
      * Get instance of Response.
      */
     public function response($body = null)

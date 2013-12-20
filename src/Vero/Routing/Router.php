@@ -34,13 +34,13 @@ class Router
     protected $urls = [];
     
     /**
-     * Instance od URL ready to clone and fill with action part.
+     * Instance of URL ready to clone and fill with action part.
      */
     protected $basicUrl;
     
     /**
      * Construct instance of router.
-     * Set default schame, domain, basePath and prefix for created URLs.
+     * Set default scheme, domain, basePath and prefix for created URLs.
      * 
      * @param string
      * @param string
@@ -58,6 +58,26 @@ class Router
     }
     
     /**
+     * Get current base URL.
+     * 
+     * @return string
+     */
+    public function getBase()
+    {
+        return $this -> defaultUrl -> getBase();
+    }
+    
+    /**
+     * Get current URL prefix.
+     * 
+     * @return string
+     */
+    public function getPrefix()
+    {
+        return $this -> defaultUrl -> getPrefix();
+    }
+    
+    /**
      * Change default url used to generate action urls.
      */
     public function setDefaultUrl(URL $url)
@@ -71,8 +91,7 @@ class Router
      * Method can be used in chain.
      * 
      * @param string Key at witch Route will be available in method url()
-     * @param
-     * @retrun Router
+     * @retrun self
      */
     public function addRoute($id, Route $route)
     {
@@ -84,6 +103,24 @@ class Router
         
         $this -> routes[$prefix][] = [$route, $id];
         $this -> urls[$id] = $route;
+        
+        return $this;
+    }
+    
+    /**
+     * Get Route registered with speciefied key.
+     * 
+     * @param string
+     * @return Route
+     * @throws \OutOfBoundsException
+     */
+    public function getRoute($id)
+    {
+        if (!isset($this -> urls[$id])) {
+            throw new \OutOfBoundsException(sprintf('Route with id "%s" not found!', $id));
+        }
+        
+        return $this -> urls[$id];
     }
     
     /**
@@ -163,30 +200,71 @@ class Router
             throw new \OutOfRangeException('Route with ID "'.$id.'" is not registered in Router.');
         }
         
-        if (!is_array($params)) {
-            $params = func_get_args();
-            array_shift($params); // remove $id
-        }
-        
-        reset($params);
-        // if first key is integer, others should be too
-        if (is_int(key($params))) {
-            $tmp = [];
-            $i = 0;
+        // if param is object, search for keys in this object
+        if (is_object($params) && !method_exists($params, '__toString')) {
+            $object = $params;
+            $params = [];
+            
             foreach ($this->urls[$id]->getAvailableParams() as $name) {
-                if (isset($params[$i])) {
-                    $tmp[$name] = $params[$i];
+                $v = $this -> tryToGetObjectProperty($object, $name);
+                
+                if ($v !== null) {
+                    $params[$name] = $v;
                 }
-                $i++;
             }
-            $params = $tmp;
+            
+        } else {
+            if (!is_array($params)) {
+                $params = func_get_args();
+                array_shift($params); // remove $id
+            }
+
+            reset($params);
+
+            // if first key is integer, others should be too
+            if (is_int(key($params))) {
+                $tmp = [];
+                $i = 0;
+                foreach ($this->urls[$id]->getAvailableParams() as $name) {
+                    if (isset($params[$i])) {
+                        $tmp[$name] = $params[$i];
+                    }
+                    $i++;
+                }
+                $params = $tmp;
+            }
         }
         
         return $this -> defaultUrl -> copy() -> setAction(
             $this -> urls[$id] -> url($params)
         );
     }
-    
+
+    /**
+     * Try to find property value in object.
+     * 
+     * @param object
+     * @param string
+     * @return mixed
+     */
+    protected function tryToGetObjectProperty($object, $property)
+    {
+        if (isset($object -> $property)) {
+            return $object -> $property;
+        }
+        
+        if (is_callable([$object, $property])) {
+            return $object -> $property();
+        }
+        
+        if (is_callable([$object, 'get'.$property])) {
+            $m = 'get'.$property;
+            return $object -> $m();
+        }
+        
+        return null;
+    }
+
     /**
      * Check, if route is registered in this router.
      * 

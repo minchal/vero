@@ -26,6 +26,7 @@ class PackagesInstall extends Console\Command\Command
             -> setDescription('Install Vero packages from common repository.')
             -> addArgument('package', InputArgument::IS_ARRAY, 'Packages names to uninstall')
             -> addOption('force', null, InputOption::VALUE_NONE, 'Owerwrite existing files')
+            -> addOption('deps', null, InputOption::VALUE_NONE, 'With dependencies')
             -> addOption('dest', 'd', InputOption::VALUE_OPTIONAL, 'Change destination directory')
             -> setHelp(
 <<<EOT
@@ -48,10 +49,8 @@ EOT
             $input->getOption('dest') ? $input->getOption('dest') : $container->get('app')->path('base')
         );
         
-        $force = (boolean) $input->getOption('force');
-        
         $listener = function ($node, $status) use ($output) {
-            $output -> write('      ');
+            $output -> write('   ');
             
             switch ($status) {
                 case 2:
@@ -68,30 +67,21 @@ EOT
             $output -> writeln(' '.$node);
         };
         
-        foreach ($input->getArgument('package') as $name) {
-            $package = $mngr -> getPackage($name);
-            
-            $output -> writeln('Package <comment>'.$package->getname().'</comment>:');
-            $output -> writeln('   dependencies:');
-            
-            foreach ($package->getDeps() as $dep) {
-                $output -> write('      '.str_pad($dep, 15));
-                
-                switch($mngr -> checkStatus($mngr -> getPackage($dep))) {
-                    case 2:
-                        $output -> writeln('<comment>partial</comment>');
-                        break;
-                    case 1:
-                        $output -> writeln('<info>installed</info>');
-                        break;
-                    case 0:
-                        $output -> writeln('<error>not found</error>');
-                        break;
-                }
-            }
-            
-            $output -> writeln('   installing files:');
-            
+        $force    = (boolean) $input->getOption('force');
+        $withDeps = (boolean) $input->getOption('deps');
+        
+        $packages = $mngr -> resolvePackages($input->getArgument('package'), $withDeps);
+        
+        $output -> write('Installing' . ($withDeps ? ' (extended list)' : '') .":\n   ");
+        
+        foreach ($packages as $package) {
+            $output -> write('<info>' . $package -> getName() . '</info> ');
+        }
+        
+        $output -> writeln('');
+        
+        foreach ($packages as $package) {
+            $output -> writeln('Package <comment>'.$package->getName().'</comment>:');
             $mngr -> install($package, $force, $listener);
         }
     }

@@ -8,6 +8,7 @@ namespace Vero\UI;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\DBAL\Query\QueryBuilder as DBALQueryBuilder;
 
 /**
  * Listing to work with Doctrine\ORM Paginator helper.
@@ -15,19 +16,21 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 class DoctrineListing extends Listing
 {
     /**
-     * Prepare listing instance from Doctrine Query or QueryBuilder.
+     * Prepare listing instance from Doctrine ORM Query or QueryBuilder.
      * 
      * Sets 'order by' only for QueryBuilder.
      * 
-     * @param Doctrine\ORM\Query|Doctrine\ORM\QueryBuilder
+     * @param Query|QueryBuilder
+     * @param boolean
+     * @param boolean
      * @param boolean
      * @return self
-     * @see Doctrine\ORM\Tools\Pagination\Paginator
+     * @see Paginator
      */
-    public function setQuery($query, $fetchJoinCollection = false)
+    public function setQuery($query, $fetchJoinCollection = false, $appendLimit = true, $appendOrder = true)
     {
         if ($query instanceof QueryBuilder) {
-            if ($this -> order()) {
+            if ($appendOrder && $this -> order()) {
                 call_user_func_array([$query, 'orderBy'], (array) $this -> order());
             }
             
@@ -38,15 +41,46 @@ class DoctrineListing extends Listing
             throw \InvalidArgumentException('Instance of Doctrine\ORM\Query or Doctrine\ORM\QueryBuilder required!');
         }
         
-        $paginator = new Paginator($query, $fetchJoinCollection);
+        if ($appendLimit) {
+            $paginator = new Paginator($query, $fetchJoinCollection);
+
+            $this -> setCount($paginator -> count());
+
+            $query
+                -> setFirstResult($this -> offset())
+                -> setMaxResults($this -> limit());
+
+            $this -> setItems($paginator);
+        } else {
+            $this -> setItems($query -> getResult());
+        }
         
-        $this -> setCount($paginator -> count());
+        return $this;
+    }
+    
+    /**
+     * Prepare listing instance from Doctrine DBAL QueryBuilder.
+     * 
+     * Total rows count for Listing instance must be set separately.
+     * 
+     * @param DBALQueryBuilder
+     * @param boolean
+     * @param boolean
+     * @return self
+     */
+    public function setDBALQuery(DBALQueryBuilder $query, $appendLimit = true, $appendOrder = true)
+    {
+        if ($appendLimit) {
+            $query
+                -> setFirstResult($this -> offset())
+                -> setMaxResults($this -> limit());
+        }
         
-        $query
-            -> setFirstResult($this -> offset())
-            -> setMaxResults($this -> limit());
+        if ($appendOrder && $this -> order()) {
+            call_user_func_array([$query, 'orderBy'], (array) $this -> order());
+        }
         
-        $this -> setItems($paginator);
+        $this -> setItems($query -> execute() -> fetchAll());
         
         return $this;
     }

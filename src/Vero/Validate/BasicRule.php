@@ -33,9 +33,9 @@ abstract class BasicRule implements Rule
     /**
      * Set internal error message.
      */
-    protected function error($id, $args = [])
+    protected function error($id, $args = [], $domain = null)
     {
-        $this -> lastError = Error::create($id, $args);
+        $this -> lastError = Error::create($id, $args, $domain);
     }
     
     /**

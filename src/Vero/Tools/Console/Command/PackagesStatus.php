@@ -23,8 +23,9 @@ class PackagesStatus extends Console\Command\Command
     {
         $this
             -> setName('vero:packages:status')
-            -> setDescription('Install Vero packages from common repository.')
-            -> addArgument('package', InputArgument::IS_ARRAY, 'Packages names to uninstall')
+            -> setDescription('Check, if package is installed.')
+            -> addArgument('package', InputArgument::IS_ARRAY, 'Packages names to check')
+            -> addOption('deps', null, InputOption::VALUE_NONE, 'With dependencies')
             -> addOption('dest', 'd', InputOption::VALUE_OPTIONAL, 'Change destination directory')
             -> setHelp(
 <<<EOT
@@ -73,9 +74,9 @@ EOT
             }
         };
         
-        foreach ($input->getArgument('package') as $name) {
-            $package = $mngr -> getPackage($name);
-            
+        $packages = $mngr -> resolvePackages($input->getArgument('package'), (boolean) $input->getOption('deps'));
+        
+        foreach ($packages as $package) {
             $output -> writeln('Package <comment>'.$package->getname().'</comment>:');
             $output -> writeln('   dependencies:');
             

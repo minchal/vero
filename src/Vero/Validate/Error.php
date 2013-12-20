@@ -40,7 +40,7 @@ class Error implements Translatable
      * @param array
      * @return self
      */
-    public static function create($id, $args = array(), $domain = null)
+    public static function create($id, $args = [], $domain = null)
     {
         return new self($id, $args, $domain);
     }

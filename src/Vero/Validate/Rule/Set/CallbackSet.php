@@ -86,6 +86,15 @@ class CallbackSet implements \Iterator, SetInterface
     }
     
     /**
+     * Get item description.
+     */
+    public function getDesc($item)
+    {
+        $getDesc = $this -> getDesc;
+        return $getDesc($item);
+    }
+    
+    /**
      * @inheritdoc
      */
     public function rewind()

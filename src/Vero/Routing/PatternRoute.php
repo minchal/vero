@@ -135,7 +135,7 @@ class PatternRoute implements Route
      * to regular expresion fragment.
      * 
      * @param string
-     * @param string 'int', 'any' or regular expresion part
+     * @param string 'int', 'any', 'idstr' or regular expresion part
      * @param boolean
      */
     protected function toRegexp($name, $reqs, $required)
@@ -143,6 +143,8 @@ class PatternRoute implements Route
         // requirements
         if ($reqs == 'int') {
             $reqs = '\d+';
+        } elseif ($reqs == 'idstr') {
+            $reqs = '([a-zA-Z]+)([-_a-zA-Z0-9]*)';
         } elseif ($reqs == 'any') {
             $reqs = '[^/]+';
         }
@@ -193,13 +195,12 @@ class PatternRoute implements Route
      */
     public function match($url, &$args = array())
     {
-        $m = array();
         if (!preg_match($this -> regexp, $url, $m)) {
             return false;
         }
         
         foreach ($this -> params as $param => $default) {
-            $args[$param] = isset($m[$param]) && $m[$param] ? $m[$param] : $default;
+            $args[$param] = isset($m[$param]) ? $m[$param] : $default;
         }
         
         return true;

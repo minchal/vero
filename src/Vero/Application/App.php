@@ -47,7 +47,10 @@ abstract class App
         }
         
         mb_internal_encoding('UTF-8');
-        setlocale(LC_ALL, $this -> config -> get('locale', 'en'));
+        
+        if ($locale = $this -> config -> get('locale')) {
+            setlocale(LC_ALL, $locale);
+        }
         
         date_default_timezone_set($this -> config -> get('timezone', 'Europe/London'));
     }
@@ -83,7 +86,11 @@ abstract class App
      */
     public function registerPath($prefix, $path)
     {
-        $this -> paths[$prefix] = realpath($path).'/';
+        if (file_exists($path)) {
+            $path = realpath($path);
+        }
+        
+        $this -> paths[$prefix] = $path.'/';
         return $this;
     }
     

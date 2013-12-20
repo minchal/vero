@@ -6,6 +6,7 @@
 namespace Vero\Web;
 
 use Vero\Filesystem\File;
+use Vero\Filesystem\Directory;
 
 /**
  * Instance of uploaded file.
@@ -77,6 +78,8 @@ class UploadedFile extends File
         $name = $name === null ? $this -> getOriginalName() : $name;
         
         $path = rtrim($to .'/'. $name, '/');
+        
+        Directory::ensure(dirname($path));
         
         if (!@move_uploaded_file($this->tmp_name, $path)) {
             throw new Exception\Upload('upload error move', 'global');

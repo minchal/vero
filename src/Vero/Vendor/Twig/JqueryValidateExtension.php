@@ -57,6 +57,7 @@ class JqueryValidateExtension extends \Twig_Extension
     /**
      * Parse rule options and get items for "Set Rule".
      * If "Set Rule" is next rule after "Array Rule", get items from deeper level.
+     * If "Set Rule" is in "Chain Rule", get irems from chain element.
      * 
      * @param array
      * @return array|\Vero\Validate\Rule\Set\SetInterface
@@ -67,8 +68,17 @@ class JqueryValidateExtension extends \Twig_Extension
             return $validate['options']['items'];
         }
         
-        if (isset($validate['options']['options']['items'])) {
-            return $validate['options']['options']['items'];
+        if (isset($validate['options'])) {
+            foreach ($validate['options'] as $row) {
+                // from "Array Rule"
+                if (isset($row['items'])) {
+                    return $row['items'];
+                }
+                // from "Chain Rule"
+                if (isset($row[1]['items'])) {
+                    return $row[1]['items'];
+                }
+            }
         }
         
         return [];

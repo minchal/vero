@@ -36,6 +36,42 @@ class Manager
     }
     
     /**
+     * Get flat list of packages, optionaly with dependencies.
+     * 
+     * @param array
+     * @param boolean $withDeps
+     * @param callable $listener
+     */
+    public function resolvePackages($names, $withDeps = false)
+    {
+        $packages = [];
+        $this -> resolvePackagesRec($names, $packages, $withDeps);
+        return $packages;
+    }
+    
+    /**
+     * Extend packages array with isntances and dependencies.
+     * 
+     * @param array
+     * @param array
+     * @param boolean
+     */
+    protected function resolvePackagesRec(array $names, array &$packages, $withDeps = false) {
+        foreach ($names as $name) {
+            if (isset($packages[$name])) {
+                continue;
+            }
+            
+            $package = $this -> getPackage($name);
+            $packages[$package -> getName()] = $package;
+            
+            if ($withDeps) {
+                $this -> resolvePackagesRec($package -> getDeps(), $packages, true);
+            }
+        }
+    }
+    
+    /**
      * Install package.
      * 
      * Listener receives two arguments:
@@ -106,8 +142,8 @@ class Manager
     /**
      * Check isntallation status of package.
      * 
-     * 2 - partially isntalled
-     * 1 - isntalled
+     * 2 - partially installed
+     * 1 - installed
      * 0 - not found
      * 
      * @return int

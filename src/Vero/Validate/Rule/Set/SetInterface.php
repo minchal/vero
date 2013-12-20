@@ -6,9 +6,9 @@
 namespace Vero\Validate\Rule\Set;
 
 /**
- * Provides traversable set of key=>value pairs.
+ * Interface to validate key in set and to retrive value.
  */
-interface SetInterface extends \Traversable
+interface SetInterface
 {
     /**
      * Check, if key is valid in this set.

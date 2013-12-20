@@ -18,16 +18,19 @@ use Vero\Validate\BasicRule;
  */
 class ArrayInput extends BasicRule
 {
+    const SEPARATOR = ',';
+    
     /**
      * {@inheritdoc}
      */
     public function test(&$value, array $options = [])
     {
-        if (!is_array($value)) {
-            $value = [];
+        if ($value && !is_array($value)) {
+            $value = explode(self::SEPARATOR, (string) $this -> getScalar($value));
         }
         
         if (!$value) {
+            $value = [];
             return $this -> testRequired($value, $options);
         }
         

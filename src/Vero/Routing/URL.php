@@ -10,9 +10,9 @@ namespace Vero\Routing;
  */
 class URL
 {
-    protected $scheme;
+    protected $scheme = 'http';
     protected $domain;
-    protected $base;
+    protected $base = '/';
     protected $prefix;
     protected $action;
     protected $get = [];
@@ -39,7 +39,7 @@ class URL
     /**
      * Return clone of instance.
      * 
-     * @return \Vero\Routing\URL
+     * @return self
      */
     public function copy()
     {
@@ -48,6 +48,7 @@ class URL
     
     /**
      * Replace parameter in action part.
+     * @return self
      */
     public function replace($from, $to)
     {
@@ -61,7 +62,9 @@ class URL
     }
     
     /**
-     * Show schame and domain part when toStringing.
+     * Show scheme and domain part when toStringing.
+     * 
+     * @return self
      */
     public function full()
     {
@@ -70,12 +73,24 @@ class URL
     }
     
     /**
-     * Hide schame and domain part when toStringing.
+     * Hide scheme and domain part when toStringing.
+     * 
+     * @return self
      */
     public function relative()
     {
         $this -> isFull = false;
         return $this;
+    }
+    
+    /**
+     * Clear base and prefix parts.
+     * 
+     * @return self
+     */
+    public function clearBase()
+    {
+        return $this -> setBase('') -> setPrefix('');
     }
     
     /**
@@ -88,12 +103,28 @@ class URL
     }
     
     /**
+     * @return string
+     */
+    public function getScheme()
+    {
+        return $this -> scheme;
+    }
+    
+    /**
      * @return self
      */
     public function setDomain($e)
     {
         $this -> domain = $e;
         return $this;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getDomain()
+    {
+        return $this -> domain;
     }
     
     /**
@@ -106,6 +137,14 @@ class URL
     }
     
     /**
+     * @return string
+     */
+    public function getBase()
+    {
+        return $this -> base;
+    }
+    
+    /**
      * @return self
      */
     public function setPrefix($e)
@@ -115,12 +154,28 @@ class URL
     }
     
     /**
+     * @return string
+     */
+    public function getPrefix()
+    {
+        return $this -> prefix;
+    }
+    
+    /**
      * @return self
      */
     public function setAction($e)
     {
         $this -> action = $e;
         return $this;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getAction()
+    {
+        return $this -> action;
     }
     
     /**
@@ -135,6 +190,14 @@ class URL
         }
         
         return $this;
+    }
+    
+    /**
+     * @return string|array
+     */
+    public function getGet()
+    {
+        return $this -> get;
     }
     
     /**
@@ -166,6 +229,14 @@ class URL
     {
         $this -> anchor = $e;
         return $this;
+    }
+    
+    /**
+     * @return string|array
+     */
+    public function getAnchor()
+    {
+        return $this -> anchor;
     }
     
     /**

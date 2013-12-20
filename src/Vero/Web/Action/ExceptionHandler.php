@@ -32,7 +32,7 @@ class ExceptionHandler extends Session
         
         $this -> logException($e);
         
-        $response = $this -> response($this -> render($this -> getTemplate($e), ['message' => $e -> getMessage()]));
+        $response = $this -> response($this -> getExceptionResponseBody(($e)));
         
         if ($e instanceof Exception\NotFound) {
             $response -> headerCode(404);
@@ -46,11 +46,29 @@ class ExceptionHandler extends Session
     }
     
     /**
+     * Get instance of ResponseBody for exception.
+     * 
+     * @return string|\Vero\Web\ResponseBody
+     * @api
+     */
+    protected function getExceptionResponseBody(\Exception $e)
+    {
+        return $this -> render(
+            $this -> getExceptionTemplate($e),
+            [
+                'exception' => $e,
+                'message'   => $e -> getMessage()
+            ]
+        );
+    }
+    
+    /**
      * Get template file name for exception.
      * 
      * @return string
+     * @api
      */
-    protected function getTemplate(\Exception $e)
+    protected function getExceptionTemplate(\Exception $e)
     {
         return 'exception/exception.twig';
     }
@@ -59,6 +77,7 @@ class ExceptionHandler extends Session
      * Add info about exception to logger, if posible.
      * 
      * @return boolean
+     * @api
      */
     protected function logException(\Exception $e)
     {

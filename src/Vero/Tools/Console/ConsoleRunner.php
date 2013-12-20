@@ -19,6 +19,7 @@ class ConsoleRunner
     {
         $app -> addCommands(
             [
+                new Command\DatabaseExport(),
                 new Command\CompactLibs(),
                 new Command\DecryptDebug(),
                 new Command\PackagesInstall(),

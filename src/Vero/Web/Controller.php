@@ -82,7 +82,10 @@ class Controller extends App\Controller
         $c = $this -> container -> get('config');
         
         $response
-            -> setCookiePath($c -> get('cookie.path', '/'))
+            -> setCookiePath($c -> get(
+                'cookie.path',
+                $c -> get('routing.base', $this -> container -> get('router') -> getBase())
+            ))
             -> setCookieDomain($c -> get('cookie.domain'))
             -> send($this -> listeners);
     }
@@ -98,10 +101,11 @@ class Controller extends App\Controller
     protected function findAction(Request $request)
     {
         $router = $this -> container -> get('router');
+        $query = $request -> getQuery($router -> getBase(), $router -> getPrefix());
         
-        list($id, $class, $params) = $router -> match($request -> getQuery());
+        list($id, $class, $params) = $router -> match($query);
         
-        $params['query']  = $request -> getQuery();
+        $params['query']  = $query;
         $params['action'] = $id;
         $params['url']    = $router -> url($id, $params) -> setGet($request -> get());
         

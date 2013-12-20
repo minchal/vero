@@ -42,6 +42,7 @@ class Validator implements IteratorAggregate, Countable
         'datetime' => '\Vero\Validate\Rule\DateTime',
         
         'repeat'   => '\Vero\Validate\Rule\Repeat',
+        'equals'   => '\Vero\Validate\Rule\Equals',
     ];
     
     /**

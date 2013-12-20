@@ -15,6 +15,7 @@ use Vero\Validate\BasicRule;
  *  - min (default: 0, set to null to remove)
  *  - max
  *  - precision (default: 2)
+ *  - nullable (boolean, default: false) - Transform empty string value to null (instead of 0)
  */
 class Number extends BasicRule
 {
@@ -26,7 +27,12 @@ class Number extends BasicRule
         $value = $this -> getScalar($value);
         
         if (!$value) {
-            $value = 0;
+            if ($this -> option($options, 'nullable') && $value === '') {
+                $value = null;
+            } else {
+                $value = 0;
+            }
+            
             return $this -> testRequired($value, $options);
         }
         
@@ -51,15 +57,15 @@ class Number extends BasicRule
         
         if ($min !== null && $max !== null) {
             if ($value < $min || $value > $max) {
-                return $this -> error('range scope', array('min' => $min, 'max' => $max));
+                return $this -> error('range scope', [$min, $max]);
             }
         } elseif ($min !== null) {
             if ($value < $min) {
-                return $this -> error('range min', array('min' => $min));
+                return $this -> error('range min', $min);
             }
         } elseif ($max !== null) {
             if ($value > $max) {
-                return $this -> error('range max', array('max' => $max));
+                return $this -> error('range max', $max);
             }
         }
         
@@ -73,7 +79,7 @@ class Number extends BasicRule
         $regexp = '/^(\-)?[0-9]+[\.,]?[0-9]{0,'.$prec.'}$/';
         
         if (!preg_match($regexp, $value)) {
-            $this -> error('precision', array('precision'=>$prec));
+            $this -> error('precision', [0, $prec]);
             return false;
         }
         
