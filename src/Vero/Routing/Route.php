@@ -52,4 +52,11 @@ interface Route
      * @return boolean True if $url is matched
      */
     public function match($url, &$args = array());
+    
+    /**
+     * Return Route as string for debugging purposes.
+     * 
+     * @return string
+     */
+    public function __toString();
 }

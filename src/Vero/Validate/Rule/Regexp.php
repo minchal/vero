@@ -33,7 +33,7 @@ class Regexp extends BasicRule
         if (!preg_match($this -> option($options, 'pattern'), $value)) {
             $this -> error(
                 'regexp',
-                ['format' => $this -> option($options, 'format', $this -> option($options, 'pattern'))]
+                [$this -> option($options, 'format', $this -> option($options, 'pattern'))]
             );
             
             return false;

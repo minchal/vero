@@ -163,7 +163,7 @@ class JqueryValidateExtension extends \Twig_Extension
     
     protected function validateIdstr($opt, $attr)
     {
-        $attr['data-rule-idstr'] = '';
+        $attr['data-rule-idstr'] = isset($opt['chars']) ? $opt['chars'] : '_-';
         return $this -> validateString($opt, $attr);
     }
     

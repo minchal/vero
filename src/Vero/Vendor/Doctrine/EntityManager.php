@@ -55,22 +55,38 @@ class EntityManager extends DoctrineManager
     /**
      * {@inheritdoc}
      * 
+     * @param $entities Object|array
      * @return self
      */
-    public function persist($entity)
+    public function persist($entities)
     {
-        parent::persist($entity);
+        if (!is_array($entities)) {
+            $entities = [$entities];
+        }
+        
+        foreach ($entities as $entity) {
+            parent::persist($entity);
+        }
+        
         return $this;
     }
     
     /**
      * {@inheritdoc}
      * 
+     * @param $entities Object|array
      * @return self
      */
-    public function remove($entity)
+    public function remove($entities)
     {
-        parent::remove($entity);
+        if (!is_array($entities)) {
+            $entities = [$entities];
+        }
+        
+        foreach ((array) $entities as $entity) {
+            parent::remove($entity);
+        }
+        
         return $this;
     }
 }

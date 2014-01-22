@@ -14,9 +14,11 @@ use FilesystemIterator;
 class Directory extends Node implements IteratorAggregate
 {
     /**
-     * Check if writable directory exists or try to create one.
+     * Check if writable directory exists or create one.
      * 
      * @param string
+     * @return true
+     * @throws Exception
      */
     public static function ensure($dir)
     {
@@ -30,6 +32,24 @@ class Directory extends Node implements IteratorAggregate
                 );
             }
         }
+        
+        return true;
+    }
+    
+    /**
+     * Try to ensure writable directory.
+     * 
+     * @param string
+     * @retrun boolean true, when directory is available
+     */
+    public static function tryEnsure($dir)
+    {
+        try {
+            return self::ensure($dir);
+        } catch (Exception $e) {
+        }
+        
+        return false;
     }
     
     /**
@@ -42,6 +62,11 @@ class Directory extends Node implements IteratorAggregate
         return $i;
     }
     
+    /**
+     * Create directory.
+     * 
+     * @return self
+     */
     public function create()
     {
         if (!@mkdir($this->getPathname(), 0777, true)) {

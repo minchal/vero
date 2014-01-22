@@ -86,6 +86,17 @@ class Router
     }
     
     /**
+     * Get all registered routes.
+     * Keys in array are IDs.
+     * 
+     * @return array
+     */
+    public function getRoutes()
+    {
+        return $this -> urls;
+    }
+    
+    /**
      * Register Route in this Router.
      * 
      * Method can be used in chain.

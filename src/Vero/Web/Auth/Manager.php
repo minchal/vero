@@ -196,12 +196,12 @@ class Manager
         
         $key = $request -> cookie($this -> autologinCookie);
         
-        if (!$userId = $this -> autologin -> searchAutologinKey($key)) {
+        if (!$userId = $this -> autologin -> find($key, $this -> autologinTtl)) {
             return false;
         }
         
         if (!$user = $this -> provider -> getUser($userId)) {
-            $this -> autologin -> removeAutologinKey($key);
+            $this -> autologin -> remove($key);
             return false;
         }
         
@@ -227,8 +227,8 @@ class Manager
         
         $key = TokenGenerator::get();
         
-        $this -> autologin -> addAutologinKey($key, $this->user->getId());
-        $response -> cookie($this -> autologinCookie, $key);
+        $this -> autologin -> add($key, $this -> user -> getId(), $this -> autologinTtl);
+        $response -> cookie($this -> autologinCookie, $key, time() + $this -> autologinTtl);
         
         return true;
     }
@@ -246,7 +246,7 @@ class Manager
         
         if ($key = $request -> cookie($this -> autologinCookie)) {
             $response -> cookie($this -> autologinCookie, '', 1);
-            $this -> autologin -> removeAutologinKey($key);
+            $this -> autologin -> delete($key);
         }
         
         return $this;

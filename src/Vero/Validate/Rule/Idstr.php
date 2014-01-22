@@ -12,6 +12,7 @@ namespace Vero\Validate\Rule;
  * 
  * Options:
  *  - optional (default: false)
+ *  - chars (additional available chars, default: -_)
  *  - min
  *  - max (default: 100)
  *  - length
@@ -36,8 +37,11 @@ class Idstr extends String
             return false;
         }
         
-        if (!preg_match('/^[-_a-zA-Z0-9]+$/', $value)) {
-            $this -> error('idstr');
+        $chars = $this -> option($options, 'chars', '_-');
+        $chars_regexp = '\\'.implode('\\', str_split($chars));
+        
+        if (!preg_match('/^['.$chars_regexp.'a-zA-Z0-9]+$/', $value)) {
+            $this -> error('idstr', $chars);
             return false;
         }
         if (!preg_match('/^([a-zA-Z]+)(.*)$/', $value)) {

@@ -205,4 +205,12 @@ class PatternRoute implements Route
         
         return true;
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function __toString()
+    {
+        return $this -> url;
+    }
 }

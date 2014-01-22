@@ -78,6 +78,16 @@ class Translator
     }
     
     /**
+     * Get accepted locales array.
+     * 
+     * @return array
+     */
+    public function getAcceptedLocales()
+    {
+        return $this -> accepted;
+    }
+    
+    /**
      * Set current language and locale.
      * Locale is choosen from accepted languages list.
      * 

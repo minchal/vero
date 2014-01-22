@@ -49,6 +49,22 @@ class UniversalLoader
     }
     
     /**
+     * Get all registered namespaces.
+     * 
+     * @return array
+     */
+    public function getNamespaces()
+    {
+        $r = [];
+        
+        foreach ($this -> prefixes as $i) {
+            $r[$i[0]] = $i[1];
+        }
+        
+        return $r;
+    }
+    
+    /**
      * @param array
      * @return UniversalLoader
      */
