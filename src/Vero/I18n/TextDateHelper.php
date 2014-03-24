@@ -61,61 +61,61 @@ class TextDateHelper
         if ($now === null) {
             $now = new DateTime();
         }
-        
-		$date = $this -> forceDateTime($date);
-		$now = $this -> forceDateTime($now);
-        
+
+        $date = $this -> forceDateTime($date);
+        $now = $this -> forceDateTime($now);
+
         $midnight = clone $now;
         $midnight -> modify('midnight');
-        
+
         $smdiff = $midnight -> getTimestamp() - $date -> getTimestamp();
         $sdiff = $now -> getTimestamp() - $date -> getTimestamp();
-        
+
         $year = $date -> format('Y');
         $day = $date -> format('j');
         $hi = $date -> format('H:i');
-        
+
         if ($year != $now -> format('Y')) {
             return $this -> i18n('before this year', [$day, $this -> i18n('month '.$date -> format('n')), $year, $hi]);
         }
-        
+
         if ($smdiff >= 6*24*60*60) {
             return $this -> i18n('this year', [$day, $this -> i18n('month '.$date -> format('n')), $hi]);
         }
-        
+
         if ($smdiff > 2*24*60*60) {
             return $this -> i18n('week', [$this -> i18n('weekday '.$date -> format('N')), $hi]);
         }
-        
+
         if ($smdiff > 24*60*60) {
             return $this -> i18n('before yesterday', [$hi]);
         }
-        
+
         if ($smdiff > 0) {
             return $this -> i18n('yesterday', [$hi]);
         }
-        
+
         if ($sdiff >= 12*60*60) {
             return $this -> i18n('today', [$hi]);
         }
-        
+
         if ($sdiff >= 60*60-30) {
             return $this -> i18n('hours', [round($sdiff/(60*60))]);
         }
-        
+
         if ($sdiff >= 60) {
             return $this -> i18n('minutes', [round($sdiff/60)]);
         }
-        
+
         if ($sdiff > 0) {
             return $this -> i18n('seconds', [$sdiff]);
         }
-        
+
         if ($sdiff == 0) {
             return $this -> i18n('now');
         }
-        
-		return $this -> i18n -> getFormatter() -> date($date);
+
+        return $this -> i18n -> getFormatter() -> date($date);
     }
     
     /**

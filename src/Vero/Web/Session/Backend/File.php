@@ -42,7 +42,7 @@ class File implements Backend
             $content = file_get_contents($file);
             
             if (!$content) {
-                usleep(rand(100,10000));
+                usleep(rand(100, 10000));
             }
             
             $retries++;

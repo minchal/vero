@@ -16,7 +16,9 @@ class Auth extends LazyService
         $auth = new Manager(
             $c -> get('session'),
             $c -> get('auth-provider'),
-            $c -> has('autologin-provider') ? $c -> get('autologin-provider') : null
+            $c -> get('config') -> get('session.autologin', true) && $c -> has('autologin-provider') ?
+                $c -> get('autologin-provider') :
+                null
         );
 
         $request = $c -> get('request');

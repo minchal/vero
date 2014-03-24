@@ -13,12 +13,16 @@ class ACL extends LazyService
 {
     protected function create(Container $c)
     {
-        $acl = new A\ACL(
-            new A\Backend\XML(
+        if ($c -> has('acl-backend')) {
+            $backend = $c -> get('acl-backend');
+        } else {
+            $backend = new A\Backend\XML(
                 $c -> get('app') -> path('resources/acl/'),
                 $c -> get('cache')
-            )
-        );
+            );
+        }
+        
+        $acl = new A\ACL($backend);
 
         if ($c -> has('auth')) {
             $acl -> setSessionRole($c -> get('auth') -> getUser());

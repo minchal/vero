@@ -37,6 +37,23 @@ class Node extends SplFileInfo
     }
     
     /**
+     * Check if node is writable or if not exists is posible to create.
+     * 
+     * Method runs recursively.
+     * 
+     * @return boolean
+     */
+    public function writable()
+    {
+        if ($this -> exists()) {
+            return $this -> isWritable();
+        }
+        
+        $dir = $this -> getPath();
+        return $dir ? (new Directory($dir)) -> writable() : false;
+    }
+    
+    /**
      * Check if node is in other directory
      * 
      * @return boolean

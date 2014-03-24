@@ -20,9 +20,9 @@ class Urlify
      */
     public static function transform($str, $replace = '-', $maxLength = 250)
     {
-		$str = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
-		$str = preg_replace('/[^\-\.\_\w]/', $replace, strtolower($str));
-		$str = preg_replace('/[\\'.$replace.']+/', $replace, $str);
-		return substr($str, 0, $maxLength);
+        $str = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
+        $str = preg_replace('/[^\-\.\_\w]/', $replace, strtolower($str));
+        $str = preg_replace('/[\\'.$replace.']+/', $replace, $str);
+        return substr($str, 0, $maxLength);
     }
 }

@@ -56,7 +56,8 @@ class Manager
      * @param array
      * @param boolean
      */
-    protected function resolvePackagesRec(array $names, array &$packages, $withDeps = false) {
+    protected function resolvePackagesRec(array $names, array &$packages, $withDeps = false)
+    {
         foreach ($names as $name) {
             if (isset($packages[$name])) {
                 continue;

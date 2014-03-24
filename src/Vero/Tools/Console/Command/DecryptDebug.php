@@ -23,8 +23,16 @@ class DecryptDebug extends Console\Command\Command
     {
         $this
             -> setName('vero:decrypt-debug')
-            -> setDescription('Decrypt message showed to user by Vero\Debug\CryptEnv on critical error in production mode.')
-            -> addArgument('message', InputArgument::OPTIONAL, 'The path to file with encoded message or string with message', 'debug.txt')
+            -> setDescription(
+                'Decrypt message showed to user by Vero\Debug\CryptEnv '
+                . 'on critical error in production mode.'
+            )
+            -> addArgument(
+                'message',
+                InputArgument::OPTIONAL,
+                'The path to file with encoded message or string with message',
+                'debug.txt'
+            )
             -> addOption('key', 'k', InputOption::VALUE_OPTIONAL, 'Path to private key file', 'key.pem')
             -> setHelp(
 <<<EOT

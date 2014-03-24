@@ -12,7 +12,7 @@ use Vero\Application as App;
  */
 class Controller extends App\Controller
 {
-    protected $exceptionHandler = '\Vero\Web\Action\ExceptionHandler';
+    protected $exceptionHandler = '\Vero\Web\ExceptionHandler';
     protected $listeners = [];
     
     /**
@@ -69,11 +69,22 @@ class Controller extends App\Controller
     }
     
     /**
-     * Prepare and send response.
+     * Send response.
      * 
      * @param Response|ResponseBody|string $response
      */
     protected function sendResponse($response)
+    {
+        $this -> prepareResponse($response) -> send($this -> listeners);
+    }
+    
+    /**
+     * Prepare response.
+     * 
+     * @param Response|ResponseBody|string $response
+     * @return Response
+     */
+    protected function prepareResponse($response)
     {
         if (!$response instanceof Response) {
             $response = new Response($response);
@@ -81,13 +92,12 @@ class Controller extends App\Controller
         
         $c = $this -> container -> get('config');
         
-        $response
+        return $response
             -> setCookiePath($c -> get(
                 'cookie.path',
                 $c -> get('routing.base', $this -> container -> get('router') -> getBase())
             ))
-            -> setCookieDomain($c -> get('cookie.domain'))
-            -> send($this -> listeners);
+            -> setCookieDomain($c -> get('cookie.domain'));
     }
     
     /**
@@ -96,6 +106,7 @@ class Controller extends App\Controller
      * If Web Controller needs to do something more with request, 
      * this is first method to override.
      * 
+     * @api
      * @return string|null
      */
     protected function findAction(Request $request)
@@ -105,13 +116,24 @@ class Controller extends App\Controller
         
         list($id, $class, $params) = $router -> match($query);
         
-        $params['query']  = $query;
-        $params['action'] = $id;
-        $params['url']    = $router -> url($id, $params) -> setGet($request -> get());
-        
-        $request -> setParams($params);
+        $request -> setParams($this -> getRequestParams($request, $query, $id, $params));
         
         return $class;
+    }
+    
+    /**
+     * Prepare params to set for Request.
+     * 
+     * @api
+     * @return array
+     */
+    protected function getRequestParams(Request $request, $query, $id, $params)
+    {
+        return $params + [
+            'query' => $query,
+            'action' => $id,
+            'url' => $this -> container -> get('router') -> url($id, $params) -> setGet($request -> get())
+        ];
     }
     
     /**

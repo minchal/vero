@@ -324,7 +324,7 @@ class Request implements \ArrayAccess
      */
     public function guessBase()
     {
-		return rtrim(dirname($this -> server('SCRIPT_NAME')), '/') . '/';
+        return rtrim(dirname($this -> server('SCRIPT_NAME')), '/') . '/';
     }
     
     /**

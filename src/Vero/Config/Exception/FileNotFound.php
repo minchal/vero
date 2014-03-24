@@ -8,6 +8,6 @@ namespace Vero\Config\Exception;
 /**
  * Configuration file not found exception.
  */
-class FileNotFound extends \LogicException
+class FileNotFound extends \RuntimeException
 {
 }

@@ -24,7 +24,8 @@ class DateTime
         if ($input) {
             try {
                 return new DT($input);
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
         
         return null;

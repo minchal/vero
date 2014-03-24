@@ -24,7 +24,9 @@ class Container
         }
         
         if (!$service instanceof Service) {
-            throw new \DomainException('Service must be callback or implement Vero\DependencyInjection\Service interface.');
+            throw new \DomainException(
+                'Service must be callback or implement Vero\DependencyInjection\Service interface.'
+            );
         }
         
         $service -> setContainer($this);

@@ -73,7 +73,7 @@ class Manager
             }
             
             $widget = new $class($this -> container);
-            $this -> widgets[$this -> getWidgetName($widget)] = $widget;
+            $this -> widgets[$name] = $widget;
         }
         
         return $this -> widgets[$name];

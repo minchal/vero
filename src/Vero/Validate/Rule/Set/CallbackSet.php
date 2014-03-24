@@ -9,7 +9,7 @@ namespace Vero\Validate\Rule\Set;
  * Set proxy for array of items and mapping 
  * functions to get key and value from item.
  */
-class CallbackSet implements \Iterator, SetInterface
+class CallbackSet implements \Iterator, \Countable, SetInterface
 {
     protected $getKey;
     protected $getDesc;
@@ -134,5 +134,15 @@ class CallbackSet implements \Iterator, SetInterface
     public function valid()
     {
         return isset($this -> data[$this -> position]);
+    }
+
+    /**
+     * Return count of available options.
+     * 
+     * @return int
+     */
+    public function count()
+    {
+        return count($this -> data);
     }
 }

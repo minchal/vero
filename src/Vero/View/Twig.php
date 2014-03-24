@@ -160,6 +160,7 @@ class Twig implements ResponseBody, DI\Dependent
         try {
             $twig = $this -> container -> get('twig');
             $twig -> addGlobal('widgets', $this -> widgets);
+            $twig -> addGlobal('isDebug', $this -> container -> get('app') -> debug());
             
             return $twig -> render($this -> tpl, $this -> data);
         } catch (\Twig_Error_Runtime $e) {

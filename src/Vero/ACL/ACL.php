@@ -10,9 +10,11 @@ namespace Vero\ACL;
  */
 class ACL
 {
-    protected $data = array();
+    protected $data = [];
     protected $backend;
     protected $sessionRole;
+    
+    protected $last = [];
     
     /**
      * Construct ACL with specified backend
@@ -37,32 +39,37 @@ class ACL
      * Returns true if role have access to key.
      * 
      * @param string|array
-     * @param null|Role
+     * @param null|string|Role
      * @return boolean
      */
     public function check($key, $role = null)
     {
-        if ($role === null) {
-            $role = $this -> sessionRole;
-        }
+        $role = $this -> getRole($role === null ? $this -> sessionRole : $role);
         
-        if (!$role instanceof Role) {
-            throw new \InvalidArgumentException('Role must be instance of Vero\ALC\Role.');
-        }
-        
-        $role = $role -> getRole();
-        
-        if (!isset($this -> data[$role])) {
-            $this -> data[$role] = $this -> backend -> get($role);
-        }
-        
-        if (!is_array($key)) {
+        if (is_array($key)) {
+            $keyS = implode('/', $key);
+        } else {
+            $keyS = $key;
             $key = explode('/', $key);
         }
         
-        // search key
-        $next = & $this -> data[$role];
-        $last = false;
+        if (!isset($this -> last[$role][$keyS])) {
+            $this -> last[$role][$keyS] = $this -> doCheck($key, $role);
+        }
+        
+        return $this -> last[$role][$keyS];
+    }
+    
+    /**
+     * Real check algorithm implementation.
+     * 
+     * @param array $key
+     * @param string $role
+     * @return boolean
+     */
+    protected function doCheck(array $key, $role)
+    {
+        $next = $this -> getData($role);
         
         foreach ($key as $part) {
             if (isset($next[$part])) {
@@ -70,14 +77,108 @@ class ACL
                     return false;
                 }
                 
-                $last = $next[$part]['access'];
-                $next = & $next[$part]['items'];
+                $next = isset($next[$part]['items']) ? $next[$part]['items'] : [];
                 
             } else {
                 return isset($next['*']) ? $next['*']['access'] : false;
             }
         }
         
-        return $last;
+        return true;
+    }
+    
+    /**
+     * Set access for specified role and key.
+     * 
+     * @param string|Role
+     * @param string|array
+     * @param boolean
+     */
+    public function set($role, $key, $value)
+    {
+        $role = $this -> getRole($role);
+        $value = (boolean) $value;
+        
+        if ($this -> check($key, $role) == $value) {
+            return;
+        }
+        
+        if (!is_array($key)) {
+            $key = explode('/', $key);
+        }
+        
+        // search key
+        $last = null;
+        $next = & $this -> getData($role);
+        
+        foreach ($key as $part) {
+            if (!isset($next[$part]) || !$next[$part]['access']) {
+                $next[$part] = [
+                    'access' => true
+                ];
+            }
+            
+            $last = & $next[$part];
+            
+            if (!isset($last['items'])) {
+                $last['items'] = [];
+            }
+            
+            $next = & $last['items'];
+        }
+        
+        $last['access'] = $value;
+    }
+    
+    /**
+     * Save settings for speciefied role.
+     * 
+     * @param string|Role
+     */
+    public function save($role)
+    {
+        if (!$this -> backend instanceof WritableBackend) {
+            throw new \InvalidArgumentException(
+                'Provided backend must be instance of Vero\ALC\WritableBackend for permanent change of settings.'
+            );
+        }
+        
+        $role = $this -> getRole($role);
+        $this -> backend -> save($role, $this -> getData($role));
+    }
+    
+    /**
+     * Check, if role argument is valid and returm role ID.
+     * 
+     * @param scalar|Role
+     * @return string
+     * @throws \InvalidArgumentException
+     */
+    protected function getRole($role)
+    {
+        if (!$role instanceof Role && !is_scalar($role)) {
+            throw new \InvalidArgumentException('Role must be instance of Vero\ALC\Role or scalar.');
+        }
+        
+        if ($role instanceof Role) {
+            return $role -> getRole();
+        }
+        
+        return $role;
+    }
+    
+    /**
+     * Load and return data for specified role.
+     * 
+     * @param string
+     * @return array
+     */
+    protected function & getData($role)
+    {
+        if (!isset($this -> data[$role])) {
+            $this -> data[$role] = (array) $this -> backend -> get($role);
+        }
+        
+        return $this -> data[$role];
     }
 }

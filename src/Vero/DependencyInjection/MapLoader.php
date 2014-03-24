@@ -29,7 +29,7 @@ class MapLoader
      */
     public function loadAll($dir)
     {
-        foreach(glob($dir.'/*.php') as $file) {
+        foreach (glob($dir.'/*.php') as $file) {
             $this -> load($file);
         }
         
