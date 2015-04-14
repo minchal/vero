@@ -22,6 +22,14 @@ class DateTime
     public static function parse($input)
     {
         if ($input) {
+            if ($input instanceof DT) {
+                return $input;
+            }
+            
+            if (is_numeric($input)) {
+                $input = date('Y-m-d H:i:s', $input);
+            }
+            
             try {
                 return new DT($input);
             } catch (\Exception $e) {

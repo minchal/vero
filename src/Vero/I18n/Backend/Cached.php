@@ -39,6 +39,18 @@ abstract class Cached implements Backend
     }
     
     /**
+     * {@inheritdoc}
+     */
+    public function getAll($lang, $section)
+    {
+        if (!isset($this -> data[$lang][$section])) {
+            $this -> data[$lang][$section] = $this -> load($lang, $section);
+        }
+        
+        return $this -> data[$lang][$section];
+    }
+    
+    /**
      * Try to load data from cache and if not exists, load from source.
      * 
      * @param string

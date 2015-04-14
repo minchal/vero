@@ -39,7 +39,7 @@ class String extends BasicRule
         
         if (isset($options['length'])) {
             if ($options['length'] != $len) {
-                return $this -> error('length compare', $options['length']);
+                return $this -> optionalError($options, 'length compare', $options['length']);
             }
         }
         
@@ -48,15 +48,15 @@ class String extends BasicRule
         
         if ($min !== null && $max !== null) {
             if ($len < $min || $len > $max) {
-                return $this -> error('length scope', [$min, $max]);
+                return $this -> optionalError($options, 'length scope', [$min, $max]);
             }
         } elseif ($min !== null) {
             if ($len < $min) {
-                return $this -> error('length min', $min);
+                return $this -> optionalError($options, 'length min', $min);
             }
         } elseif ($max !== null) {
             if ($len > $max) {
-                return $this -> error('length max', $max);
+                return $this -> optionalError($options, 'length max', $max);
             }
         }
         

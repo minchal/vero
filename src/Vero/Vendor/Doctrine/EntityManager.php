@@ -19,6 +19,14 @@ class EntityManager extends DoctrineManager
     /**
      * {@inheritdoc}
      */
+    public function createQueryBuilder()
+    {
+        return new QueryBuilder($this);
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
     public static function create($conn, Configuration $config, EventManager $eventManager = null)
     {
         if (!$config->getMetadataDriverImpl()) {

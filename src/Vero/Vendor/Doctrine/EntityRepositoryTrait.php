@@ -52,4 +52,27 @@ trait EntityRepositoryTrait
         
         return $items;
     }
+    
+    /**
+     * Check if specified key is 
+     * not empty scalar value or 
+     * not empty array or 
+     * not array with empty values only.
+     * 
+     * @param array|\ArrayAccess
+     * @param string
+     * @return boolean
+     */
+    protected static function notEmpty($array, $key)
+    {
+        if (empty($array[$key])) {
+            return false;
+        }
+        
+        if (is_array($array[$key])) {
+            return (boolean) array_filter($array[$key], 'strlen');
+        }
+        
+        return true;
+    }
 }

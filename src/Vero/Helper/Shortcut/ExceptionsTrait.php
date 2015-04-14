@@ -6,7 +6,7 @@
 namespace Vero\Helper\Shortcut;
 
 use Vero\Web\Exception;
-use Vero\Application\Exception as AppException;
+use Vero\Application\TranslatableException as AppException;
 
 /**
  * Shortcuts to use default translator service.

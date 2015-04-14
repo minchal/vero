@@ -30,8 +30,14 @@ class DoctrineListing extends Listing
     public function setQuery($query, $fetchJoinCollection = false, $appendLimit = true, $appendOrder = true)
     {
         if ($query instanceof QueryBuilder) {
-            if ($appendOrder && $this -> order()) {
-                call_user_func_array([$query, 'orderBy'], (array) $this -> order());
+            $order = $this -> order();
+            
+            if ($appendOrder && $order) {
+                if (is_array($order)) {
+                    call_user_func_array([$query, 'orderBy'], $order);
+                } else {
+                    $query -> add('orderBy', $order);
+                }
             }
             
             $query = $query -> getQuery();

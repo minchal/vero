@@ -145,7 +145,7 @@ class Twig implements ResponseBody, DI\Dependent
         $response -> header('Content-Type', $this->format . '; charset=UTF-8');
         
         $this -> set('signature', $this -> getSignatureKey());
-        $this -> set('debug', $buffer);
+        $this -> set('buffer', $buffer);
         
         $this -> compiled = $this -> render();
     }
@@ -160,7 +160,6 @@ class Twig implements ResponseBody, DI\Dependent
         try {
             $twig = $this -> container -> get('twig');
             $twig -> addGlobal('widgets', $this -> widgets);
-            $twig -> addGlobal('isDebug', $this -> container -> get('app') -> debug());
             
             return $twig -> render($this -> tpl, $this -> data);
         } catch (\Twig_Error_Runtime $e) {

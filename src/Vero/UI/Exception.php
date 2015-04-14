@@ -10,6 +10,6 @@ use Vero\Application;
 /**
  * Exception to report wrong use of UI.
  */
-class Exception extends Application\Exception
+class Exception extends Application\TranslatableException
 {
 }

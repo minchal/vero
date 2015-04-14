@@ -27,6 +27,8 @@ class Request implements \ArrayAccess
 {
     const GET  = 'GET';
     const POST = 'POST';
+    const PUT = 'PUT';
+    const DELETE = 'DELETE';
     
     const FILE_TEXT  = 1;
     const FILE_IMAGE = 2;
@@ -45,6 +47,7 @@ class Request implements \ArrayAccess
     
     /**
      * Create request instance from globals arrays.
+     * Try to accept and parse JSON requests.
      */
     public static function createFromGlobals()
     {
@@ -55,6 +58,17 @@ class Request implements \ArrayAccess
             'files' => $_FILES,
             'server' => $_SERVER,
         ]);
+        
+        if (
+            $request -> server('CONTENT_TYPE') &&
+            strpos($request -> server('CONTENT_TYPE'), 'application/json') === 0
+        ) {
+            $data = json_decode(file_get_contents('php://input'), true);
+            
+            if ($data) {
+                $request -> globals['post'] = $data;
+            }
+        }
         
         return $request;
     }
@@ -226,7 +240,7 @@ class Request implements \ArrayAccess
      */
     public function host()
     {
-        return $this -> server('SERVER_NAME', 'localhost');
+        return $this -> server('HTTP_HOST', 'localhost');
     }
     
     /**
@@ -274,6 +288,14 @@ class Request implements \ArrayAccess
     /**
      * @return boolean
      */
+    public function isGet()
+    {
+        return $this -> method() == self::GET;
+    }
+    
+    /**
+     * @return boolean
+     */
     public function isPost()
     {
         return $this -> method() == self::POST;
@@ -282,9 +304,17 @@ class Request implements \ArrayAccess
     /**
      * @return boolean
      */
-    public function isGet()
+    public function isPut()
     {
-        return $this -> method() == self::GET;
+        return $this -> method() == self::PUT;
+    }
+    
+    /**
+     * @return boolean
+     */
+    public function isDelete()
+    {
+        return $this -> method() == self::DELETE;
     }
     
     /**

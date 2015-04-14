@@ -10,5 +10,5 @@ namespace Vero;
  */
 class Version
 {
-    const VERSION = '1.3';
+    const VERSION = '1.3.1';
 }

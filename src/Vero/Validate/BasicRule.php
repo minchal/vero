@@ -31,6 +31,18 @@ abstract class BasicRule implements Rule
     }
     
     /**
+     * Set internal error message with optional custom message.
+     */
+    protected function optionalError($options, $id, $args = [], $domain = null)
+    {
+        if (isset($options['errors'][$id])) {
+            $this -> lastError = Error::raw($options['errors'][$id]);
+        } else {
+            $this -> error($id, $args, $domain);
+        }
+    }
+    
+    /**
      * Set internal error message.
      */
     protected function error($id, $args = [], $domain = null)
@@ -60,7 +72,7 @@ abstract class BasicRule implements Rule
         if ($this -> option($options, 'optional')) {
             return true;
         } else {
-            $this -> error('required');
+            $this -> optionalError($options, 'required');
             return false;
         }
     }

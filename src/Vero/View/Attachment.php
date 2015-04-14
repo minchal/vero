@@ -26,6 +26,8 @@ class Attachment implements ResponseBody
     protected $name;
     protected $headers;
     protected $contentType = 'application/octet-stream';
+    protected $contentLength;
+    protected $asAttachment = true;
     
     /**
      * If no $name is specified, filename will be guessed from real $path.
@@ -42,6 +44,7 @@ class Attachment implements ResponseBody
         
         if ($path instanceof Node) {
             $this -> setContentType($path -> mime());
+            $this -> setContentLength($path -> getSize());
         }
     }
     
@@ -58,13 +61,44 @@ class Attachment implements ResponseBody
     }
     
     /**
+     * Set response Content-Type header
+     * 
+     * @param string
+     * @return self
+     */
+    public function setContentLength($length)
+    {
+        $this -> contentLength = $length;
+        return $this;
+    }
+    
+    /**
+     * Set response Content-Disposition header
+     * 
+     * @param boolean
+     * @return self
+     */
+    public function setAsAttachment($a)
+    {
+        $this -> asAttachment = $a;
+        return $this;
+    }
+    
+    /**
      * {@inheritdoc}
      */
     public function prepare(Response $response, $buffer = null)
     {
         if ($this -> headers) {
             $response -> header('Content-Type', $this -> contentType);
-            $response -> header('Content-disposition', 'attachment; filename='.$this->name);
+            
+            if ($this -> asAttachment) {
+                $response -> header('Content-Disposition', 'attachment; filename="' . $this -> name . '"');
+            }
+            
+            if ($this -> contentLength) {
+                $response -> header('Content-Length', $this -> contentLength);
+            }
         }
     }
     

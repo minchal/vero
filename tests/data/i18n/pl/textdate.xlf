@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+<file source-language="pl" target-language="pl" datatype="plaintext">
+<body>
+    <trans-unit id="now"><source>teraz</source></trans-unit>
+    <trans-unit id="seconds"><source>{0,plural,one{sekundę}few{{0,number} sekundy}other{{0,number} sekund}} temu</source></trans-unit>
+    <trans-unit id="minutes"><source>{0,plural,one{minutę}few{{0,number} minuty}other{{0,number} minut}} temu</source></trans-unit>
+    <trans-unit id="hours"><source>{0,plural,one{godzinę}few{{0,number} godziny}other{{0,number} godzin}} temu</source></trans-unit>
+    
+    <trans-unit id="today"><source>dzisiaj o {0}</source></trans-unit>
+    <trans-unit id="yesterday"><source>wczoraj o {0}</source></trans-unit>
+    <trans-unit id="before yesterday"><source>przedwczoraj o {0}</source></trans-unit>
+    <trans-unit id="week"><source>{0} o {1}</source></trans-unit>
+    <trans-unit id="this year"><source>{0} {1} o {2}</source></trans-unit>
+    <trans-unit id="before this year"><source>{0} {1} {2} o {3}</source></trans-unit>
+    
+    <trans-unit id="weekday 1"><source>w poniedziałek</source></trans-unit>
+    <trans-unit id="weekday 2"><source>we wtorek</source></trans-unit>
+    <trans-unit id="weekday 3"><source>w środę</source></trans-unit>
+    <trans-unit id="weekday 4"><source>w czwartek</source></trans-unit>
+    <trans-unit id="weekday 5"><source>w piątek</source></trans-unit>
+    <trans-unit id="weekday 6"><source>w sobotę</source></trans-unit>
+    <trans-unit id="weekday 7"><source>w niedzielę</source></trans-unit>
+    
+    <trans-unit id="month 1"><source>stycznia</source></trans-unit>
+    <trans-unit id="month 2"><source>lutego</source></trans-unit>
+    <trans-unit id="month 3"><source>marca</source></trans-unit>
+    <trans-unit id="month 4"><source>kwietnia</source></trans-unit>
+    <trans-unit id="month 5"><source>maja</source></trans-unit>
+    <trans-unit id="month 6"><source>czerwca</source></trans-unit>
+    <trans-unit id="month 7"><source>lipca</source></trans-unit>
+    <trans-unit id="month 8"><source>sierpnia</source></trans-unit>
+    <trans-unit id="month 9"><source>września</source></trans-unit>
+    <trans-unit id="month 10"><source>października</source></trans-unit>
+    <trans-unit id="month 11"><source>listopada</source></trans-unit>
+    <trans-unit id="month 12"><source>grudnia</source></trans-unit>
+</body>
+</file>
+</xliff>

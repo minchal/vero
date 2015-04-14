@@ -37,7 +37,7 @@ class Number extends BasicRule
         }
         
         if (!preg_match('/^(\-)?[0-9]+[\.,]?[0-9]*$/', $value)) {
-            $this -> error('number');
+            $this -> optionalError($options, 'number');
             return false;
         }
         
@@ -57,15 +57,15 @@ class Number extends BasicRule
         
         if ($min !== null && $max !== null) {
             if ($value < $min || $value > $max) {
-                return $this -> error('range scope', [$min, $max]);
+                return $this -> optionalError($options, 'range scope', [$min, $max]);
             }
         } elseif ($min !== null) {
             if ($value < $min) {
-                return $this -> error('range min', $min);
+                return $this -> optionalError($options, 'range min', $min);
             }
         } elseif ($max !== null) {
             if ($value > $max) {
-                return $this -> error('range max', $max);
+                return $this -> optionalError($options, 'range max', $max);
             }
         }
         
@@ -79,7 +79,7 @@ class Number extends BasicRule
         $regexp = '/^(\-)?[0-9]+[\.,]?[0-9]{0,'.$prec.'}$/';
         
         if (!preg_match($regexp, $value)) {
-            $this -> error('precision', [0, $prec]);
+            $this -> optionalError($options, 'precision', [0, $prec]);
             return false;
         }
         

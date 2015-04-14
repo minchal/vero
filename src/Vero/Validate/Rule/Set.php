@@ -37,7 +37,7 @@ class Set extends BasicRule
         }
         
         if (!$items -> has($value)) {
-            $this -> error('set');
+            $this -> optionalError($options, 'set');
             return false;
         }
         

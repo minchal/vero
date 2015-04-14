@@ -8,30 +8,30 @@ namespace Vero\Validate\Rule;
 use Vero\Validate\BasicRule;
 
 /**
- * Field repeat rule.
- * Value must equals with other field's value, defined in validator.
+ * Callback rule. 
  * 
  * Options:
  *  - optional (default: false)
- *  - field (default: 'password')
+ *  - callback
  */
-class Repeat extends BasicRule
+class Callback extends BasicRule
 {
     /**
      * {@inheritdoc}
      */
     public function test(&$value, array $options = [])
     {
-        $value2 = $this -> validator -> value($this -> option($options, 'field', 'password'));
-        
-        if (!$value && !$value2) {
+        if (!$value) {
             $value = null;
             return $this -> testRequired($value, $options);
         }
         
-        if ($value != $value2) {
-            $this -> optionalError($options, 'repeat');
-            return false;
+        $callback = $this -> option($options, 'callback', function() {
+            return true;
+        });
+        
+        if (!$callback($value)) {
+            return $this -> optionalError($options, 'callback');
         }
         
         return true;

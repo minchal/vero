@@ -5,7 +5,7 @@
 
 namespace Vero\Vendor\Doctrine;
 
-use Vero\Application\Exception as AppExc;
+use Vero\Application\TranslatableException as AppExc;
 
 /**
  * Exception to report problem with finding Entity.

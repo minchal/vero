@@ -169,10 +169,8 @@ class Form implements IteratorAggregate
             $this -> token = $this -> request -> $fun($this -> name);
             
             // check tokens
-            if ($this -> useToken) {
-                if ($this -> getBag() -> has($this -> token)) {
-                    throw new Exception('error token', 'global');
-                }
+            if ($this -> useToken && $this -> getBag() -> has($this -> token)) {
+                throw new Exception('error token', 'global');
             }
             
             if ($this -> useCSRF && $this -> request -> $fun('csrf') != $this -> csrf()) {

@@ -114,9 +114,9 @@ class Controller extends App\Controller
         $router = $this -> container -> get('router');
         $query = $request -> getQuery($router -> getBase(), $router -> getPrefix());
         
-        list($id, $class, $params) = $router -> match($query);
+        list($id, $class, $params) = $router -> match($query, $request -> method());
         
-        $request -> setParams($this -> getRequestParams($request, $query, $id, $params));
+        $request -> setParams($this -> getRequestParams($request, $query, $id, (array) $params));
         
         return $class;
     }

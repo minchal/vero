@@ -48,4 +48,14 @@ trait EntityTrait
     {
         return get_object_vars($this);
     }
+    
+    /**
+     * Get full name of Entity class.
+     * 
+     * @return string
+     */
+    public static function getClass()
+    {
+        return get_called_class();
+    }
 }

@@ -45,6 +45,16 @@ abstract class Action implements ActionInterface
         $this -> controller = $this -> get('controller');
         $this -> router     = $this -> get('router');
         
+        $this -> init();
+    }
+    
+    /**
+     * Initialization procedures.
+     * 
+     * @api
+     */
+    protected function init()
+    {
         $this -> setDomain();
     }
     

@@ -6,7 +6,7 @@
 namespace Vero\Validate\Rule\Set;
 
 /**
- * Interface to validate key in set and to retrive value.
+ * Set of values validable by validator.
  */
 interface SetInterface
 {
@@ -25,20 +25,4 @@ interface SetInterface
      * @returns mixed
      */
     public function value($key);
-    
-    /**
-     * Get key from value.
-     * 
-     * @param mixed $item
-     * @returns mixed
-     */
-    public function getKey($item);
-    
-    /**
-     * Get keys from array value.
-     * 
-     * @param array $items
-     * @returns array
-     */
-    public function getKeys($items);
 }

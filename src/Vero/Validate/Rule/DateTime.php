@@ -43,7 +43,7 @@ class DateTime extends BasicRule
         try {
             $value = new \DateTime($value);
         } catch (\Exception $e) {
-            $this -> error('datetime');
+            $this -> optionalError($options, 'datetime');
             return false;
         }
         
@@ -58,15 +58,15 @@ class DateTime extends BasicRule
         
         if ($min !== null && $max !== null) {
             if ($value < $min || $time > $max) {
-                return $this->error('range scope', ['min'=>$min->format($format), 'max'=>$max->format(self::$format)]);
+                return $this->optionalError($options, 'range scope', ['min'=>$min->format($format), 'max'=>$max->format(self::$format)]);
             }
         } elseif ($min !== null) {
             if ($value < $min) {
-                return $this->error('range min', ['min'=>$min->format($format)]);
+                return $this->optionalError($options, 'range min', ['min'=>$min->format($format)]);
             }
         } elseif ($max !== null) {
             if ($value > $max) {
-                return $this->error('range max', ['max'=>$max->format($format)]);
+                return $this->optionalError($options, 'range max', ['max'=>$max->format($format)]);
             }
         }
         

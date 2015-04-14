@@ -22,6 +22,7 @@ class Validator implements IteratorAggregate, Countable
      */
     protected $rules = [
         'chain'    => '\Vero\Validate\Rule\Chain',
+        'callback' => '\Vero\Validate\Rule\Callback',
         'array'    => '\Vero\Validate\Rule\ArrayInput',
         'set'      => '\Vero\Validate\Rule\Set',
         

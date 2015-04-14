@@ -16,7 +16,8 @@ class Logger extends LazyService
         return new Log\Logger(
             $c -> get('config') -> get('log.level', 'info'),
             new Log\Backend\File(
-                $c -> get('app') -> path('var/log/')
+                $c -> get('app') -> path('var/log/'),
+                $c -> get('config') -> get('log.maxSize', Log\Backend\File::K128)
             )
         );
     }

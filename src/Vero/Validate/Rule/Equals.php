@@ -30,7 +30,7 @@ class Equals extends BasicRule
         }
         
         if ($value != $this -> option($options, 'value')) {
-            $this -> error('equals');
+            $this -> optionalError($options, 'equals');
             return false;
         }
         

@@ -77,6 +77,7 @@ class XML
             
             foreach ($xml->children() as $tag) {
                 $id      = (string) $tag['id'];
+                $method  = (string) $tag['method'];
                 $pattern = (string) $tag -> url;
                 $action  = (string) $tag -> action;
                 
@@ -101,6 +102,7 @@ class XML
                 
                 $routes[$module.$id] = new PatternRoute(
                     $this->getActionClass($action, $actionsNS, $id),
+                    strtoupper($method),
                     $pattern,
                     $params
                 );

@@ -5,34 +5,42 @@
 
 namespace Vero\Validate\Rule;
 
-use Vero\Validate\BasicRule;
-
 /**
  * Time rule.
  * Value must be in format hh:mm:ss.
  * 
  * Options:
  *  - optional (default: false)
+ *  - min (\DateTime object)
+ *  - max (\DateTime object)
+ *  - format (only for min and max options, default: 'H:i:s')
  */
-class Time extends BasicRule
+class Time extends DateTime
 {
+    const FORMAT = 'H:i:s';
+    
     /**
      * {@inheritdoc}
      */
     public function test(&$value, array $options = [])
     {
-        $value = (string) $this -> getScalar($value);
+        if (!is_scalar($value)) {
+            $value = null;
+        }
         
         if (!$value) {
             $value = null;
             return $this -> testRequired($value, $options);
         }
         
-        if (!preg_match('/^[0-9]{2}:[0-9]{2}:[0-9]{2}?$/', $value)) {
-            $this -> error('time');
+        try {
+            $value = new \DateTime($value);
+            $value ->setDate(1970, 1, 1);
+        } catch (\Exception $e) {
+            $this -> optionalError($options, 'time');
             return false;
         }
         
-        return true;
+        return $this -> testRange($value, $options);
     }
 }

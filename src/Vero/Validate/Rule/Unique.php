@@ -49,7 +49,7 @@ class Unique extends BasicRule
         }
         
         if ($qb -> getQuery() -> getSingleScalarResult()) {
-            $this -> error('unique');
+            $this -> optionalError($options, 'unique');
             return false;
         }
         

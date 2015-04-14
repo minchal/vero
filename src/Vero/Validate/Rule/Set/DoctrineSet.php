@@ -10,8 +10,10 @@ use Doctrine\ORM\EntityManager;
 /**
  * Check, if value is valid in doctrine repository.
  */
-class DoctrineSet implements SetInterface
+class DoctrineSet implements ShowableSetInterface
 {
+    use ShowableSetTrait;
+    
     protected $class;
     
     /** @var Doctrine\ORM\EntityRepository */
@@ -47,7 +49,7 @@ class DoctrineSet implements SetInterface
     {
         return (boolean) $this -> repository -> find($key);
     }
-
+    
     /**
      * {@inheritdoc}
      */
@@ -61,32 +63,22 @@ class DoctrineSet implements SetInterface
      */
     public function getKey($item)
     {
-        if ($item instanceof $this -> class) {
-            return implode(',', $this -> metadata -> getIdentifierValues($item));
+        if (!$item instanceof $this -> class) {
+            return $item;
         }
         
-        return $item;
+        return implode(',', $this -> metadata -> getIdentifierValues($item));
     }
     
     /**
      * {@inheritdoc}
      */
-    public function getKeys($items)
-    {
-        $ret = [];
-        
-        foreach ($items as $i) {
-            $ret[] = $this -> getKey($i);
-        }
-        
-        return $ret;
-    }
-    
-    /**
-     * Get item description.
-     */
     public function getDesc($item)
     {
+        if (!$item instanceof $this -> class) {
+            return '';
+        }
+        
         $getDesc = $this -> getDesc;
         return $getDesc($item);
     }

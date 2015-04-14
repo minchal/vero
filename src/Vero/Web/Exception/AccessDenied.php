@@ -5,16 +5,16 @@
 
 namespace Vero\Web\Exception;
 
-use Vero\Application\Exception;
+use Vero\Application\TranslatableException;
 
 /**
  * Exception to report bad action call.
  */
-class AccessDenied extends Exception
+class AccessDenied extends TranslatableException
 {
     protected $resource;
     
-    public static function resource($resource)
+    public static function resource($resource = null)
     {
         return new self('access denied', 'global', [], $resource);
     }

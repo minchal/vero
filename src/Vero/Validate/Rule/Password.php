@@ -37,7 +37,7 @@ class Password extends String
         }
         
         if (!preg_match('/^[ -~]+$/', $value)) {
-            $this -> error('password');
+            $this -> optionalError($options, 'password');
             return false;
         }
         

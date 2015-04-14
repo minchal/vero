@@ -36,7 +36,7 @@ class Numstr extends String
         }
         
         if (!preg_match('/^[-0-9]+$/', $value)) {
-            $this -> error('numstr');
+            $this -> optionalError($options, 'numstr');
             return false;
         }
         

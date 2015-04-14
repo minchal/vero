@@ -88,8 +88,9 @@ class File implements Backend
     {
         $time = time() - $ttl;
         
+        // implement with readdir() instead of glob() ?
         foreach (glob($this -> dir.'*.session') as $file) {
-            if (filemtime($file) < $time) {
+            if (file_exists($file) && filemtime($file) < $time) {
                 unlink($file);
             }
         }

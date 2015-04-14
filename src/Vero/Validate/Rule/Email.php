@@ -36,7 +36,7 @@ class Email extends String
         }
         
         if (filter_var($value, FILTER_VALIDATE_EMAIL) === false) {
-            $this -> error('email');
+            $this -> optionalError($options, 'email');
             return false;
         }
         

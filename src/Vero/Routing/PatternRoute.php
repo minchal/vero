@@ -21,6 +21,8 @@ class PatternRoute implements Route
 {
     protected $action;
     
+    protected $method;
+    
     /**
      * Parameters list with default values
      *    name => default value
@@ -37,13 +39,15 @@ class PatternRoute implements Route
      * so constructor is called only once, when loading route from XML file.
      * 
      * @param string $action Class name of action (with full namespace)
+     * @param string $method
      * @param string $pattern
      * @param array $params
      * @see setPattern()
      */
-    public function __construct($action, $pattern, array $params = [])
+    public function __construct($action, $method, $pattern, array $params = [])
     {
         $this -> action  = $action;
+        $this -> method  = $method;
         $this -> setPattern($pattern, $params);
     }
     
@@ -111,7 +115,7 @@ class PatternRoute implements Route
             $this -> params[$name] = $default;
             
             if ($i==0 && !$required) {
-                $prefix = substr($prefix, null, -1);
+                $prefix = (string) substr($prefix, null, -1);
             }
         }
         
@@ -193,8 +197,12 @@ class PatternRoute implements Route
     /**
      * {@inheritdoc}
      */
-    public function match($url, &$args = array())
+    public function match($url, $method = 'GET', &$args = array())
     {
+        if ($this -> method && $this -> method != $method) {
+            return false;
+        }
+        
         if (!preg_match($this -> regexp, $url, $m)) {
             return false;
         }

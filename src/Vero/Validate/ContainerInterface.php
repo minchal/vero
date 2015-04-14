@@ -11,6 +11,11 @@ namespace Vero\Validate;
 interface ContainerInterface
 {
     /**
+     * Allow to fill container with fields data.
+     */
+    public function create();
+    
+    /**
      * Get list of all registered fields.
      * 
      * @return array

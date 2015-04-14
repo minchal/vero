@@ -16,24 +16,24 @@ use Vero\Routing\URL;
  */
 class RouterExtension extends \Twig_Extension
 {
-    /**
-     * @var Router
-     */
+    /** @var Router */
     private $router;
     
-    /**
-     * @var string
-     */
+    /** @var string */
     private $assets;
+    
+    /** @var string */
+    private $assetsPath;
     
     /**
      * @param Router
      * @param string|URL Prefix to all assets (e.g. /vero/public/)
      */
-    public function __construct(Router $router, $assets = '')
+    public function __construct(Router $router, $assets = '', $assetsPath = '')
     {
         $this -> router = $router;
         $this -> assets = $assets;
+        $this -> assetsPath = $assetsPath;
     }
     
     /**
@@ -52,6 +52,17 @@ class RouterExtension extends \Twig_Extension
         return [
             'url'   => new \Twig_SimpleFunction('url', [$this, 'url']),
             'asset' => new \Twig_SimpleFunction('asset', [$this, 'asset']),
+            'assetExists' => new \Twig_SimpleFunction('assetExists', [$this, 'assetExists']),
+        ];
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getTests()
+    {
+        return [
+            'existingAsset' => new \Twig_SimpleTest('existingAsset', [$this, 'assetExists']),
         ];
     }
     
@@ -76,5 +87,14 @@ class RouterExtension extends \Twig_Extension
     public function asset($url)
     {
         return $this -> assets . $url;
+    }
+    
+    /**
+     * @param string
+     * @return boolean
+     */
+    public function assetExists($url)
+    {
+        return file_exists($this -> assetsPath . $url);
     }
 }

@@ -42,7 +42,10 @@ class IntlFormatter
      */
     public function string($str, array $args = [])
     {
-        $formatter = new MessageFormatter($this -> locale, $str);
+        // remove whitespaces (with line breaks) for some Intl versions
+        $tmp = preg_replace('/\s+/', ' ', $str);
+        
+        $formatter = new MessageFormatter($this -> locale, $tmp);
         
         if (!$formatter) {
             throw new \InvalidArgumentException('String "'.$str.'" is invalid.');
@@ -78,6 +81,9 @@ class IntlFormatter
         switch ($type) {
             case 'time':
                 $fmt = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::MEDIUM);
+                break;
+            case 'time-short':
+                $fmt = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::SHORT);
                 break;
             case 'date':
                 $fmt = new IntlDateFormatter($this->locale, IntlDateFormatter::SHORT, IntlDateFormatter::NONE);
@@ -119,8 +125,17 @@ class IntlFormatter
             case 'scientific':
                 $fmt = new NumberFormatter($this -> locale, NumberFormatter::SCIENTIFIC);
                 break;
+            case 'spellout':
+                $fmt = new NumberFormatter($this -> locale, NumberFormatter::SPELLOUT);
+                break;
             default:
                 $fmt = new NumberFormatter($this -> locale, NumberFormatter::DECIMAL);
+                
+                if (is_numeric($type)) {
+                    $fmt -> setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $type);
+                    $fmt -> setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $type);
+                }
+                
                 break;
         }
         

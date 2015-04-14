@@ -15,6 +15,7 @@ class Json implements ResponseBody
 {
     protected $data;
     protected $encoded;
+    protected $jsonp;
     
     /**
      * @param mixed $data
@@ -22,6 +23,18 @@ class Json implements ResponseBody
     public function __construct($data = null)
     {
         $this -> setData($data);
+    }
+    
+    /**
+     * Set JSONP callback function name or disable JSONP response.
+     * 
+     * @param string|null
+     * @return self
+     */
+    public function jsonp($callback)
+    {
+        $this -> jsonp = is_scalar($callback) ? htmlspecialchars($callback) : null;
+        return $this;
     }
     
     /**
@@ -49,6 +62,14 @@ class Json implements ResponseBody
      */
     public function send()
     {
+        if ($this -> jsonp) {
+            echo $this -> jsonp . '(';
+        }
+        
         echo $this -> encoded;
+        
+        if ($this -> jsonp) {
+            echo ');';
+        }
     }
 }

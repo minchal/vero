@@ -36,10 +36,10 @@ class ExceptionHandler extends Action
         
         if ($e instanceof Exception\NotFound) {
             $response -> headerCode(404);
-        }
-        
-        if ($e instanceof Exception\AccessDenied) {
+        } elseif ($e instanceof Exception\AccessDenied) {
             $response -> headerCode(403);
+        } else {
+            $response -> headerCode(400);
         }
         
         return $response;

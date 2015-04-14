@@ -20,4 +20,13 @@ interface Backend
      * @retrun string|null
      */
     public function get($lang, $section, $id);
+    
+    /**
+     * Get all strings from specified section and lang.
+     * 
+     * @param string
+     * @param string
+     * @retrun array
+     */
+    public function getAll($lang, $section);
 }

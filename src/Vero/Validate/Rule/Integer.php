@@ -34,7 +34,7 @@ class Integer extends Number
         }
         
         if (filter_var($value, FILTER_VALIDATE_INT) === false) {
-            $this -> error('integer');
+            $this -> optionalError($options, 'integer');
             return false;
         }
         

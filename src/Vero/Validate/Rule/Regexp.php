@@ -31,7 +31,8 @@ class Regexp extends BasicRule
         }
         
         if (!preg_match($this -> option($options, 'pattern'), $value)) {
-            $this -> error(
+            $this -> optionalError(
+                $options,
                 'regexp',
                 [$this -> option($options, 'format', $this -> option($options, 'pattern'))]
             );

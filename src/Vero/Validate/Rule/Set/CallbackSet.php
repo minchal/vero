@@ -9,8 +9,10 @@ namespace Vero\Validate\Rule\Set;
  * Set proxy for array of items and mapping 
  * functions to get key and value from item.
  */
-class CallbackSet implements \Iterator, \Countable, SetInterface
+class CallbackSet implements \Iterator, \Countable, ShowableSetInterface
 {
+    use ShowableSetTrait;
+    
     protected $getKey;
     protected $getDesc;
     protected $getValue;
@@ -23,6 +25,7 @@ class CallbackSet implements \Iterator, \Countable, SetInterface
      * @param array $data
      * @param callable $getKey
      * @param callable $getDesc
+     * @param callable|null $getValue
      */
     public function __construct(array $data, callable $getKey, callable $getDesc, callable $getValue = null)
     {
@@ -33,7 +36,7 @@ class CallbackSet implements \Iterator, \Countable, SetInterface
     }
     
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function value($key)
     {
@@ -49,7 +52,7 @@ class CallbackSet implements \Iterator, \Countable, SetInterface
     }
     
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function has($key)
     {
@@ -63,7 +66,7 @@ class CallbackSet implements \Iterator, \Countable, SetInterface
     }
     
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getKey($item)
     {
@@ -72,21 +75,7 @@ class CallbackSet implements \Iterator, \Countable, SetInterface
     }
     
     /**
-     * @inheritdoc
-     */
-    public function getKeys($items)
-    {
-        $ret = [];
-        
-        foreach ($items as $i) {
-            $ret[] = $this -> getKey($i);
-        }
-        
-        return $ret;
-    }
-    
-    /**
-     * Get item description.
+     * {@inheritdoc}
      */
     public function getDesc($item)
     {
@@ -95,7 +84,7 @@ class CallbackSet implements \Iterator, \Countable, SetInterface
     }
     
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rewind()
     {
@@ -103,7 +92,7 @@ class CallbackSet implements \Iterator, \Countable, SetInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function current()
     {
@@ -112,7 +101,7 @@ class CallbackSet implements \Iterator, \Countable, SetInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function key()
     {
@@ -121,7 +110,7 @@ class CallbackSet implements \Iterator, \Countable, SetInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function next()
     {
@@ -129,7 +118,7 @@ class CallbackSet implements \Iterator, \Countable, SetInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function valid()
     {
@@ -137,9 +126,7 @@ class CallbackSet implements \Iterator, \Countable, SetInterface
     }
 
     /**
-     * Return count of available options.
-     * 
-     * @return int
+     * {@inheritdoc}
      */
     public function count()
     {

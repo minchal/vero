@@ -17,6 +17,8 @@ trait ResponseTrait
 {
     /**
      * Get instance of Response.
+     * 
+     * @return Response
      */
     public function response($body = null)
     {
@@ -58,6 +60,7 @@ trait ResponseTrait
      */
     public function json($data)
     {
-        return new Json($data);
+        return (new Json($data))
+            -> jsonp($this -> get('request') -> get('callback'));
     }
 }

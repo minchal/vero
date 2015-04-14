@@ -61,7 +61,7 @@ class Node extends SplFileInfo
     public function in($path)
     {
         $path = realpath($path);
-        return $path == $this->getRealPath() || strpos($this->getRealPath(), $path.'/') === 0;
+        return $path == $this->getRealPath() || strpos($this->getRealPath(), $path . DIRECTORY_SEPARATOR) === 0;
     }
     
     /**
@@ -77,6 +77,8 @@ class Node extends SplFileInfo
         
         $to .= '/'.$name;
         
+        Directory::ensure(dirname($to));
+        
         if (!@rename($this -> getPathname(), $to)) {
             throw new Exception(
                 sprintf(
@@ -88,7 +90,8 @@ class Node extends SplFileInfo
             );
         }
         
-        return $this;
+        $c = get_class($this);
+        return new $c($to);
     }
     
     /**

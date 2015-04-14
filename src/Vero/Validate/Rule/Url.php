@@ -36,7 +36,7 @@ class Url extends String
         }
         
         if (filter_var($value, FILTER_VALIDATE_URL) === false) {
-            $this -> error('url');
+            $this -> optionalError($options, 'url');
             return false;
         }
         

@@ -51,7 +51,7 @@ interface Route
      * @param array Reference to array, that will be filled with founded and matched arguments
      * @return boolean True if $url is matched
      */
-    public function match($url, &$args = array());
+    public function match($url, $method, &$args = array());
     
     /**
      * Return Route as string for debugging purposes.

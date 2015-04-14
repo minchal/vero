@@ -39,7 +39,7 @@ class Date extends DateTime
             $value = new \DateTime($value);
             $value -> setTime(0, 0, 0);
         } catch (\Exception $e) {
-            $this -> error('date');
+            $this -> optionalError($options, 'date');
             return false;
         }
         

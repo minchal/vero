@@ -41,11 +41,11 @@ class Idstr extends String
         $chars_regexp = '\\'.implode('\\', str_split($chars));
         
         if (!preg_match('/^['.$chars_regexp.'a-zA-Z0-9]+$/', $value)) {
-            $this -> error('idstr', $chars);
+            $this -> optionalError($options, 'idstr', $chars);
             return false;
         }
         if (!preg_match('/^([a-zA-Z]+)(.*)$/', $value)) {
-            $this -> error('idstr letter first');
+            $this -> optionalError($options, 'idstr letter first');
             return false;
         }
         

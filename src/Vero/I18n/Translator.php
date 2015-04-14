@@ -68,6 +68,16 @@ class Translator
     }
     
     /**
+     * Get current Backend instance.
+     * 
+     * @return Formatter
+     */
+    public function getBackend()
+    {
+        return $this -> backend;
+    }
+    
+    /**
      * Get current Formatter instance.
      * 
      * @return Formatter

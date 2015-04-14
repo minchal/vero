@@ -5,11 +5,32 @@
 
 namespace Vero\Validate;
 
+use Vero\DependencyInjection\Dependent;
+use Vero\Helper\Shortcut;
+
 /**
  * Abstract implementation of VFC, that holds fields as internal array.
  */
-abstract class Container implements ContainerInterface, RemotableContainerInterface
+abstract class Container implements ContainerInterface, RemotableContainerInterface, Dependent
 {
+    use Shortcut\DITrait;
+    
+    /**
+     * Allow construct with params.
+     * 
+     * @depracated
+     */
+    public function __construct()
+    {
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function create()
+    {
+    }
+    
     /**
      * Associative array:
      * 
@@ -56,6 +77,11 @@ abstract class Container implements ContainerInterface, RemotableContainerInterf
      */
     public function add($field, $rule, array $options = [])
     {
+        if (!is_string($rule) && is_callable($rule)) {
+            $options['callback'] = $rule;
+            return $this -> add($field, 'callback', $options);
+        }
+        
         if (!isset($this -> fields[$field])) {
             return $this -> set($field, $rule, $options);
         }

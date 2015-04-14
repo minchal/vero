@@ -11,7 +11,7 @@ namespace Vero\Validate\Rule\Set;
 class ArraySet extends CallbackSet
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __construct(array $data)
     {

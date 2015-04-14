@@ -5,12 +5,12 @@
 
 namespace Vero\Web\Exception;
 
-use Vero\Application\Exception;
+use Vero\Application\TranslatableException;
 
 /**
  * Exception to report bad action call.
  */
-class NotFound extends Exception
+class NotFound extends TranslatableException
 {
     protected $url;
     

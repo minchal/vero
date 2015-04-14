@@ -5,11 +5,11 @@
 
 namespace Vero\Web\Exception;
 
-use Vero\Application\Exception;
+use Vero\Application\TranslatableException;
 
 /**
  * Exception to report problem with uploaded file.
  */
-class Upload extends Exception
+class Upload extends TranslatableException
 {
 }

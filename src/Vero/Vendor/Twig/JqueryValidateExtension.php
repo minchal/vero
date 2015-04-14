@@ -70,6 +70,10 @@ class JqueryValidateExtension extends \Twig_Extension
         
         if (isset($validate['options'])) {
             foreach ($validate['options'] as $row) {
+                if (!is_array($row)) {
+                    continue;
+                }
+                
                 // from "Array Rule"
                 if (isset($row['items'])) {
                     return $row['items'];
@@ -131,7 +135,7 @@ class JqueryValidateExtension extends \Twig_Extension
     {
         if (!isset($opt['optional']) || !$opt['optional']) {
             $attr['required'] = 'required';
-            $attr['class'] = 'required'; // for CKEditor textareas
+            $attr['class'] = (isset($attr['class']) ? $attr['class'].' ' : '') .'required'; // for CKEditor textareas
         }
         
         return $attr;

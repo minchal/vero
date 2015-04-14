@@ -39,6 +39,11 @@ class Router
     protected $basicUrl;
     
     /**
+     * Array of default params for URL's generation.
+     */
+    protected $defaultParams = [];
+    
+    /**
      * Construct instance of router.
      * Set default scheme, domain, basePath and prefix for created URLs.
      * 
@@ -52,9 +57,36 @@ class Router
         $this -> defaultUrl = new URL();
         $this -> defaultUrl
             -> setScheme($scheme ? $scheme : 'http')
-            -> setDomain($domain ? $domain : (isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'localhost'))
+            -> setDomain($domain ? $domain : (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost'))
             -> setBase($base)
             -> setPrefix($prefix);
+    }
+    
+    /**
+     * Add param to default params array.
+     * 
+     * @param string
+     * @param mixed
+     * @return self
+     */
+    public function setDefaultParam($name, $value)
+    {
+        $this -> defaultParams[$name] = $value;
+        return $this;
+    }
+    
+    /**
+     * Add params to default params array.
+     * 
+     * @return self
+     */
+    public function setDefaultParams(array $params)
+    {
+        foreach ($params as $name => $value) {
+            $this -> setDefaultParam($name, $value);
+        }
+        
+        return $this;
     }
     
     /**
@@ -138,9 +170,10 @@ class Router
      * Match request URL to one of registered actions.
      * 
      * @param string URL of request to match
+     * @param HTTP method of request
      * @return array|boolean Matched action ID, class and Arguments or false
      */
-    public function match($request)
+    public function match($request, $method = 'GET')
     {
         // search in routes with prefixes
         // only, when not empty (index page) request URL
@@ -148,7 +181,7 @@ class Router
             foreach ($this -> routes as $prefix => $routes) {
                 // method match() can be slower than simple strpos()
                 if ($prefix && strpos($request, $prefix) === 0) {
-                    if ($ret = $this -> matchRoutes($routes, $request)) {
+                    if ($ret = $this -> matchRoutes($routes, $request, $method)) {
                         return $ret;
                     }
                 }
@@ -157,7 +190,7 @@ class Router
         
         // search in routes without prefix
         if (isset($this -> routes[''])) {
-            return $this -> matchRoutes($this -> routes[''], $request);
+            return $this -> matchRoutes($this -> routes[''], $request, $method);
         }
         
         return false;
@@ -170,14 +203,14 @@ class Router
      * @param string URL of request to match
      * @return array|boolean
      */
-    protected function matchRoutes($routes, $request)
+    protected function matchRoutes($routes, $request, $method)
     {
         $args = [];
         
         foreach ($routes as $r) {
             list($route, $id) = $r;
 
-            if ($route -> match($request, $args)) {
+            if ($route -> match($request, $method, $args)) {
                 $args = array_map('urldecode', $args);
                 return array($id, $route -> getAction(), $args);
             }
@@ -211,16 +244,23 @@ class Router
             throw new \OutOfRangeException('Route with ID "'.$id.'" is not registered in Router.');
         }
         
+        $url = $this -> urls[$id];
+        $available = $url -> getAvailableParams();
+        $result = [];
+        
+        foreach ($available as $name) {
+            if (isset($this -> defaultParams[$name])) {
+                $result[$name] = $this -> defaultParams[$name];
+            }
+        }
+        
         // if param is object, search for keys in this object
         if (is_object($params) && !method_exists($params, '__toString')) {
-            $object = $params;
-            $params = [];
-            
-            foreach ($this->urls[$id]->getAvailableParams() as $name) {
-                $v = $this -> tryToGetObjectProperty($object, $name);
+            foreach ($available as $name) {
+                $v = $this -> tryToGetObjectProperty($params, $name);
                 
                 if ($v !== null) {
-                    $params[$name] = $v;
+                    $result[$name] = $v;
                 }
             }
             
@@ -234,20 +274,29 @@ class Router
 
             // if first key is integer, others should be too
             if (is_int(key($params))) {
-                $tmp = [];
                 $i = 0;
-                foreach ($this->urls[$id]->getAvailableParams() as $name) {
-                    if (isset($params[$i])) {
-                        $tmp[$name] = $params[$i];
+                
+                foreach ($available as $name) {
+                    if (!isset($result[$name])) {
+                        if (isset($params[$i])) {
+                            $result[$name] = $params[$i];
+                        }
+                        
+                        $i++;
                     }
-                    $i++;
                 }
-                $params = $tmp;
+                
+            } else {
+                foreach ($available as $name) {
+                    if (isset($params[$name])) {
+                        $result[$name] = $params[$name];
+                    }
+                }
             }
         }
         
         return $this -> defaultUrl -> copy() -> setAction(
-            $this -> urls[$id] -> url($params)
+            $this -> urls[$id] -> url($result)
         );
     }
 
